@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/navItemContacts"
+            android:title="Contacts" />
+        <item
+            android:id="@+id/navItemCallLog"
+            android:title="Call Log" />
+        <item
+            android:id="@+id/navItemFriends"
+            android:title="Friends" />
+        <item
+            android:id="@+id/navItemSearch"
+            android:title="Search Friend"/>
+        <item
+            android:id="@+id/navItemRequestStatus"
+            android:title="Request Status"/>
+
+        <item
+            android:id="@+id/navItemSettings"
+            android:title="Settings"/>
+    </group>
+    <item android:title="About">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:title="About This" />
+            <item
+                android:id="@+id/nav_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_feedback"
+                android:title="Feedback" />
+            <item
+                android:id="@+id/nav_rate"
+                android:title="Rate" />
+        </menu>
+    </item>
+</menu>
