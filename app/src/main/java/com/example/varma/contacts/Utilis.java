@@ -5,11 +5,9 @@ import android.content.Context;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-/**
- * Created by Varma on 3/28/2017.
- */
 
-public class Utilis {
+
+class Utilis {
 
 
     static boolean isEmailValid(String email) {

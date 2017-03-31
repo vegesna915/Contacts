@@ -1,10 +1,8 @@
 package com.example.varma.contacts;
 
-/**
- * Created by Varma on 3/30/2017.
- */
 
-public class CallLogInfo {
+
+class CallLogInfo {
 
     private String callerName, callernumber, callDuration, calldate, callType;
 

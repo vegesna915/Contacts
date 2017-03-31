@@ -2,25 +2,19 @@ package com.example.varma.contacts;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
-/**
- * Created by Varma on 3/29/2017.
- */
-
-public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerViewAdapterContact.MyViewHolder> {
+class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerViewAdapterContact.MyViewHolder> {
 
     private ArrayList<Contact> contacts;
     private Context context;
-    int color;
+    private int color;
 
     RecyclerViewAdapterContact(ArrayList<Contact> contacts) {
         this.contacts = contacts;
@@ -76,7 +70,7 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
         TextView contactNameView, contactNumberView, contactProfileIconView;
         View viewContact;
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
             contactNameView = (TextView) itemView.findViewById(R.id.contactName_contact);
             contactNumberView = (TextView) itemView.findViewById(R.id.contactNumber_contact);

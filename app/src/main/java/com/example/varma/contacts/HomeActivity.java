@@ -21,10 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,7 +128,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
 
-                getSupportActionBar().setTitle(tabTitles.get(position));
+                if(getSupportActionBar() != null){
+                    getSupportActionBar().setTitle(tabTitles.get(position));
+                }
+
             }
 
             @Override

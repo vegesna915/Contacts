@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-/**
- * Created by Varma on 3/27/2017.
- */
 
 public class HomeFragment_3 extends Fragment {
 

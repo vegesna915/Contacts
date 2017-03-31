@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    class LogingIn extends AsyncTask<Void, Void, Boolean> {
+    private class LogingIn extends AsyncTask<Void, Void, Boolean> {
 
         String[] userIds={"vegesna95@gmail.com","sunny.bodepudi@gmail.com"};
         String[] passwords = {"1234512345","1234512345"};
@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity {
                         getString(R.string.loginDetails), Context.MODE_PRIVATE);
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(getString(R.string.loginStatus), loginStatus);
+                editor.putBoolean(getString(R.string.loginStatus), true);
                 editor.putString(getString(R.string.loginEmailId), userId);
                 editor.commit();
 

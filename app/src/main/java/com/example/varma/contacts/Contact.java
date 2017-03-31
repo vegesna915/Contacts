@@ -1,10 +1,8 @@
 package com.example.varma.contacts;
 
-/**
- * Created by Varma on 3/29/2017.
- */
 
-public class Contact {
+
+class Contact {
     private String contactName, contactNumber, contactId;
 
 

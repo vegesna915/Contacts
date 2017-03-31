@@ -17,9 +17,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-/**
- * Created by Varma on 3/27/2017.
- */
+
 
 public class HomeFragment_1 extends Fragment {
 
@@ -98,26 +96,29 @@ public class HomeFragment_1 extends Fragment {
             Cursor cursorCallLog = contentResolver.query(uri, columnsNumber, where, selectionArgs, sortingOrder);
 
 
-            while (cursorCallLog.moveToNext()) {
-                callLog = new CallLogInfo();
+            if (cursorCallLog != null) {
+                while (cursorCallLog.moveToNext()) {
+                    callLog = new CallLogInfo();
 
-                callLog.setCallerName(cursorCallLog.getString(
-                        cursorCallLog.getColumnIndex(CallLog.Calls.CACHED_NAME)));
-                callLog.setCallernumber(
-                        cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.NUMBER)));
-                callLog.setCalldate(
-                        cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.DATE)));
-                callLog.setCallDuration(
-                        cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.DURATION)));
-                callLog.setCallType(
-                        cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.TYPE))
-                );
+                    callLog.setCallerName(cursorCallLog.getString(
+                            cursorCallLog.getColumnIndex(CallLog.Calls.CACHED_NAME)));
+                    callLog.setCallernumber(
+                            cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.NUMBER)));
+                    callLog.setCalldate(
+                            cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.DATE)));
+                    callLog.setCallDuration(
+                            cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.DURATION)));
+                    callLog.setCallType(
+                            cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.TYPE))
+                    );
 
-                callLogs.add(callLog);
+                    callLogs.add(callLog);
 
+                }
+                cursorCallLog.close();
             }
 
-            cursorCallLog.close();
+
 
         } catch (SecurityException e) {
             e.printStackTrace();

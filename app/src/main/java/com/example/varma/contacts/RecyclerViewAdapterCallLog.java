@@ -3,7 +3,6 @@ package com.example.varma.contacts;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.provider.CallLog;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;

@@ -1,17 +1,14 @@
 package com.example.varma.contacts;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-/**
- * Created by Varma on 3/29/2017.
- */
 
-public class PermissionsClass {
+
+class PermissionsClass {
 
 
     static String readContacts = Manifest.permission.READ_CONTACTS;

@@ -7,16 +7,14 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Varma on 3/27/2017.
- */
 
-public class FragmentAdapter_Home extends FragmentStatePagerAdapter {
 
-    List<String> titles = new ArrayList<>();
-    List<Fragment> fragments = new ArrayList<>();
+class FragmentAdapter_Home extends FragmentStatePagerAdapter {
 
-    public FragmentAdapter_Home(FragmentManager fm, List<String> titles, List<Fragment> fragments) {
+    private List<String> titles = new ArrayList<>();
+    private List<Fragment> fragments = new ArrayList<>();
+
+    FragmentAdapter_Home(FragmentManager fm, List<String> titles, List<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
         this.titles = titles;
