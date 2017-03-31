@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_home"
         android:layout_width="match_parent"
@@ -18,12 +19,13 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
         <android.support.design.widget.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tabbar_home"
-            app:tabIndicatorColor="@color/colorWhite"/>
+            app:tabIndicatorColor="@color/colorWhite" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -31,6 +33,15 @@
         android:id="@+id/viewpager_home"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="25dp"
+        android:src="@drawable/ic_dialpad"
+        app:layout_scrollFlags="scroll|enterAlways" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -5,14 +5,14 @@ package com.example.varma.contacts;
  */
 
 public class Contact {
-    private String contactName,contactNumber,contactId;
+    private String contactName, contactNumber, contactId;
 
 
-    Contact(){
+    Contact() {
 
     }
 
-    Contact(String contactName,String contactNumber, String contactId){
+    Contact(String contactName, String contactNumber, String contactId) {
         this.contactId = contactId;
         this.contactName = contactName;
         this.contactNumber = contactNumber;

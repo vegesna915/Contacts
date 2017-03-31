@@ -20,6 +20,9 @@
         <item
             android:id="@+id/navItemSettings"
             android:title="Settings"/>
+        <item
+            android:id="@+id/navItemLogOut"
+            android:title="LogOut"/>
     </group>
     <item android:title="About">
         <menu>
@@ -37,4 +40,5 @@
                 android:title="Rate" />
         </menu>
     </item>
+
 </menu>

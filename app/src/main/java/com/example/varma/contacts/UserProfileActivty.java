@@ -16,12 +16,9 @@ public class UserProfileActivty extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(((String) (getIntent().getStringExtra("from"))).equals("LoginActivity") ){
-            Intent toHomeActivity = new Intent(this,HomeActivity.class);
-            startActivity(toHomeActivity);
-        }else{
-            super.onBackPressed();
-        }
+
+        Intent toHomeActivity = new Intent(this, HomeActivity.class);
+        startActivity(toHomeActivity);
 
 
     }

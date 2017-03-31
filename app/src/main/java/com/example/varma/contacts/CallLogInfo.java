@@ -6,7 +6,8 @@ package com.example.varma.contacts;
 
 public class CallLogInfo {
 
-    private String callerName,callernumber,callDuration,calldate;
+    private String callerName, callernumber, callDuration, calldate, callType;
+
 
     public String getCallerName() {
         return callerName;
@@ -38,5 +39,13 @@ public class CallLogInfo {
 
     public void setCalldate(String calldate) {
         this.calldate = calldate;
+    }
+
+    public String getCallType() {
+        return callType;
+    }
+
+    public void setCallType(String callType) {
+        this.callType = callType;
     }
 }

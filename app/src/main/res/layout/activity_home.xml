@@ -9,9 +9,10 @@
     tools:context="com.example.varma.contacts.HomeActivity"
     tools:openDrawer="start">
 
-    <include layout="@layout/appbar_home"
+    <include
+        layout="@layout/appbar_home"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navViewHome"

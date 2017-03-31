@@ -20,9 +20,11 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
 
     private ArrayList<Contact> contacts;
     private Context context;
+    int color;
 
     RecyclerViewAdapterContact(ArrayList<Contact> contacts) {
         this.contacts = contacts;
+
     }
 
     @Override
@@ -44,6 +46,11 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
 
         String c = Utilis.getFirstLetter(contacts.get(position).getContactName());
         holder.contactProfileIconView.setText(c);
+
+        GradientDrawable drawable = (GradientDrawable) (holder.contactProfileIconView.getBackground());
+
+        color = Utilis.getContactColor(context, color);
+        drawable.setColor(color);
 
         holder.viewContact.setOnClickListener(new View.OnClickListener() {
             @Override

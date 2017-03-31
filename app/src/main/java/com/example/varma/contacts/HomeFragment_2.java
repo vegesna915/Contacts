@@ -39,17 +39,17 @@ public class HomeFragment_2 extends Fragment {
         context = inflater.getContext();
         hasPermission = PermissionsClass.hasPermissionReadContacts(getContext());
         LinearLayout linearLayout;
-        if(!hasPermission){
+        if (!hasPermission) {
 
-            linearLayout = (LinearLayout) inflater.inflate(R.layout.no_permission,container,false);
+            linearLayout = (LinearLayout) inflater.inflate(R.layout.no_permission, container, false);
             TextView textView = (TextView) linearLayout.findViewById(R.id.textView_noPermission);
             textView.setText("Permission not Granted to get Contacts");
 
-        }else{
+        } else {
 
-            linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_home_2,container,false);
+            linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_home_2, container, false);
 
-            recyclerView = (RecyclerView)linearLayout.findViewById(R.id.recyclerView_contacts_home);
+            recyclerView = (RecyclerView) linearLayout.findViewById(R.id.recyclerView_contacts_home);
 
         }
 
@@ -59,19 +59,19 @@ public class HomeFragment_2 extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(!hasPermission){
+        if (!hasPermission) {
             return;
         }
 
         getContacts();
         RecyclerViewAdapterContact adapter = new RecyclerViewAdapterContact(contacts);
-        LinearLayoutManager linearLayoutManager =new LinearLayoutManager(getActivity());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
     }
 
-    private void getContacts(){
+    private void getContacts() {
 
         Contact contact;
 
@@ -82,9 +82,7 @@ public class HomeFragment_2 extends Fragment {
         try {
 
 
-
             Uri uriNumber = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-
 
 
             String[] columnsNumber = {
@@ -94,15 +92,12 @@ public class HomeFragment_2 extends Fragment {
             };
 
 
-
             String whereNumber = ContactsContract.CommonDataKinds.Phone.IN_VISIBLE_GROUP + " ='1'" +
                     " AND " +
                     ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " = '1'";
 
 
-
             String[] selectionArgsNumber = null;
-
 
 
             String sortingOrderNumber = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
@@ -112,7 +107,7 @@ public class HomeFragment_2 extends Fragment {
                     selectionArgsNumber, sortingOrderNumber);
 
 
-            while(cursorContacts.moveToNext()){
+            while (cursorContacts.moveToNext()) {
                 contact = new Contact();
 
                 contact.setContactId(cursorContacts.getString(
@@ -128,17 +123,14 @@ public class HomeFragment_2 extends Fragment {
 
             cursorContacts.close();
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
             e.printStackTrace();
 
         }
 
 
-
-
     }
-
 
 
 }

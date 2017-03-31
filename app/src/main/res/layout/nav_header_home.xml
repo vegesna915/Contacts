@@ -7,14 +7,13 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
-    android:foreground="?attr/selectableItemBackgroundBorderless"
-    >
+    android:foreground="?attr/selectableItemBackgroundBorderless">
 
     <ImageView
         android:id="@+id/imageview_navheader_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/textview_navheader_home"
@@ -23,8 +22,7 @@
         android:paddingTop="16dp"
         android:text="Click here to Login"
         android:textColor="@color/colorWhite"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"/>
-
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
 
 </LinearLayout>

@@ -14,8 +14,8 @@ import android.os.Build;
 public class PermissionsClass {
 
 
-    static String readContacts =  Manifest.permission.READ_CONTACTS;
-    static  String readCallLog = Manifest.permission.READ_CALL_LOG;
+    static String readContacts = Manifest.permission.READ_CONTACTS;
+    static String readCallLog = Manifest.permission.READ_CALL_LOG;
 
 
     static boolean hasPermissionReadContacts(Context context) {
@@ -39,12 +39,11 @@ public class PermissionsClass {
     }
 
 
-
     static void requestPermission(Activity activity, String[] permission, int requestId) {
 
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            activity.requestPermissions(permission,requestId);
+            activity.requestPermissions(permission, requestId);
         }
 
     }

@@ -16,7 +16,7 @@ public class FragmentAdapter_Home extends FragmentStatePagerAdapter {
     List<String> titles = new ArrayList<>();
     List<Fragment> fragments = new ArrayList<>();
 
-    public FragmentAdapter_Home(FragmentManager fm,List<String> titles,List<Fragment> fragments) {
+    public FragmentAdapter_Home(FragmentManager fm, List<String> titles, List<Fragment> fragments) {
         super(fm);
         this.fragments = fragments;
         this.titles = titles;

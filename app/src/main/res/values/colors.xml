@@ -4,4 +4,15 @@
     <color name="colorPrimaryDark">#7B1FA2</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorWhite">#FFF</color>
+
+    <color name="redA400">#ef3935</color>
+    <color name="pink400">#EC407A</color>
+    <color name="purpleA200">#7C4DFF</color>
+    <color name="lightBlueA400">#00b0ff</color>
+    <color name="cyanA400">#00E5ff</color>
+    <color name="tealA400">#1de9b6</color>
+    <color name="greenA400">#00e676</color>
+    <color name="limeA400">#aeea00</color>
+    <color name="yellowA400">#ffea00</color>
+    <color name="orangeA400">#ff9100</color>
 </resources>
