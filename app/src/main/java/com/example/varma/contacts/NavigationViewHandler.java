@@ -57,8 +57,12 @@ class NavigationViewHandler {
                         context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                editor.putBoolean(context.getString(R.string.loginStatus), false);
-                editor.putString(context.getString(R.string.loginEmailId), "");
+                editor.putBoolean(context.getString(R.string.loginStatus),false);
+                editor.putBoolean(context.getString(R.string.loginIsGoogle),false);
+                editor.putString(context.getString(R.string.loginEmailId),"");
+                editor.putString(context.getString(R.string.userName),"");
+                editor.putString(context.getString(R.string.userGmailId),"");
+
                 editor.commit();
                 Intent toHomeActivity = new Intent(context, HomeActivity.class);
                 context.startActivity(toHomeActivity);

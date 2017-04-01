@@ -9,4 +9,8 @@
     <string name="loginDetails">com.varma.contacts.loginDetails</string>
     <string name="loginStatus">loginStatus</string>
     <string name="loginEmailId">loginEmailId</string>
+    <string name="loginIsGoogle">loginIsGoogle</string>
+    <string name="userName">loginUserName</string>
+    <string name="userImageUrl">userImageUrl</string>
+    <string name="userGmailId">userGmailId</string>
 </resources>

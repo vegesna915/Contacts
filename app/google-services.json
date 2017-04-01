@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "444247160569",
+    "project_id": "contacts-163307"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:444247160569:android:356241c036cd0b08",
+        "android_client_info": {
+          "package_name": "com.example.varma.contacts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "444247160569-bkjgbtva303autsarofcna07rp5b3arl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.varma.contacts",
+            "certificate_hash": "94f020999b089dbec0c89a033dc9998565a84193"
+          }
+        },
+        {
+          "client_id": "444247160569-9vps9s6qc88n81jimu1elpo36t7eo7gg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtcpZDX-DVmbGksAqpdK0xtCGaKqwdb-Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

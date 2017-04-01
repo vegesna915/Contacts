@@ -1,6 +1,7 @@
 package com.example.varma.contacts;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -29,6 +30,18 @@ class Utilis {
         }
 
     }
+
+    static boolean internetConnectionStatus(Context context){
+
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+
+
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+
+
+    }
+
+
 
     static int getContactColor(Context context, int oldColor) {
 

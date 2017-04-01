@@ -20,9 +20,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabLayout;
     private ViewPager viewPager;
     FloatingActionButton fab;
+    SharedPreferences sharedPref;
     boolean isLogin;
 
 
@@ -43,7 +48,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_home);
         //setting up toolbar
 
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
         isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
 
 
@@ -205,8 +210,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         View navHeaderView = navigationView.getHeaderView(0);
         LinearLayout navHeaderLayout = (LinearLayout) navHeaderView.findViewById(R.id.nav_header_home);
         TextView navHeaderTextView = (TextView) navHeaderLayout.findViewById(R.id.textview_navheader_home);
+        ImageView navHeaderProfilePic = (ImageView) navHeaderLayout.findViewById(R.id.imageview_navheader_home);
+        navHeaderProfilePic.setImageResource(R.drawable.ic_account_circle);
         if(isLogin){
             navHeaderTextView.setText("Click here to see User Profile");
+            if(sharedPref.getBoolean(getString(R.string.loginIsGoogle),false)&&Utilis.internetConnectionStatus(this)){
+
+                String imgUrl = sharedPref.getString(getString(R.string.userImageUrl),"");
+
+                if(!imgUrl.equals("")){
+
+                    Glide.with(this).load(imgUrl).dontAnimate().into(navHeaderProfilePic);
+
+                }
+
+
+            }
+
+
         }else{
             navHeaderTextView.setText("Click here to Login");
         }
