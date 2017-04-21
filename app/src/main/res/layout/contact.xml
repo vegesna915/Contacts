@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
-    android:paddingTop="@dimen/default_gap"
-    android:paddingStart="@dimen/default_gap"
-    android:paddingEnd="@dimen/default_gap">
+    android:padding="2dp">
 
     <TextView
         android:id="@+id/profileIcon_contact_fragment2"
@@ -13,40 +11,42 @@
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_marginEnd="@dimen/default_gap"
+        android:layout_marginTop="8dp"
         android:background="@drawable/circle"
         android:fontFamily="sans-serif-smallcaps"
         android:gravity="center"
         android:textColor="@color/colorWhite"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="15dp" />
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/linearLayout_contact_fragment2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toEndOf="@+id/profileIcon_contact_fragment2">
+        android:layout_toEndOf="@+id/profileIcon_contact_fragment2"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/contactName_contact"
             style="?android:textAppearanceMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/default_gap"
+            android:paddingEnd="8dip"
+            android:paddingStart="8dip"
+            android:paddingTop="10dip"
             android:text="Contact Name"
-            android:textStyle="bold" />
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/contactNumber_contact"
-            style="?android:textAppearanceMedium"
-            android:text="9999999999"
+            style="?android:textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_gap"
             android:paddingBottom="@dimen/default_gap"
+            android:paddingEnd="@dimen/default_gap"
             android:paddingStart="@dimen/default_gap"
-            android:paddingEnd="@dimen/default_gap" />
+            android:text="9999999999" />
     </LinearLayout>
 
 </RelativeLayout>

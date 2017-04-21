@@ -1,0 +1,141 @@
+package com.example.varma.contacts.Extra;
+
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.example.varma.contacts.HomeActivity;
+import com.example.varma.contacts.LoginActivity;
+import com.example.varma.contacts.R;
+import com.example.varma.contacts.TestActivty;
+
+
+public class NavigationViewHandler implements NavigationView.OnNavigationItemSelectedListener {
+
+    Context context;
+    Activity activity;
+    int activityName;
+
+
+    public NavigationViewHandler(Context context, Activity activity, int activityName) {
+        this.context = context;
+        this.activity = activity;
+        this.activityName = activityName;
+
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+
+        switch (item.getItemId()) {
+
+            case R.id.navItemHome: {
+                switch (activityName) {
+                    case R.string.HomeActivity: {
+
+                        break;
+                    }
+                    case R.string.UserProfileActivity: {
+                        Intent toHomeActivity = new Intent(context, HomeActivity.class);
+                        toHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        toHomeActivity.putExtra(context.getString(R.string.putExtraPage_HomeActivity), 0);
+                        context.startActivity(toHomeActivity);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+                break;
+            }
+
+
+            case R.id.navItemRequestStatus: {
+                break;
+            }
+            case R.id.navItemSearch: {
+                break;
+            }
+            case R.id.navItemSettings: {
+                break;
+            }
+            case R.id.nav_about: {
+                break;
+            }
+            case R.id.nav_share: {
+
+                Intent toTestActivity = new Intent(context, TestActivty.class);
+                context.startActivity(toTestActivity);
+                break;
+            }
+            case R.id.nav_feedback: {
+                break;
+            }
+            case R.id.nav_rate: {
+                break;
+            }
+            case R.id.navItemLogOut: {
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences(
+                        context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putBoolean(context.getString(R.string.loginStatus), false);
+                editor.putBoolean(context.getString(R.string.loginIsGoogle), false);
+                editor.putString(context.getString(R.string.loginEmail), "");
+                editor.putString(context.getString(R.string.userName), "");
+                editor.putString(context.getString(R.string.userGmailId), "");
+                editor.putString(context.getString(R.string.userNumber), "");
+
+                editor.commit();
+
+                switch (activityName) {
+                    case R.string.HomeActivity: {
+
+                        Intent toHomeActivity = new Intent(context, HomeActivity.class);
+                        toHomeActivity.putExtra(activity.getString(R.string.putExtraPage_HomeActivity), 0);
+                        toHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(toHomeActivity);
+                        break;
+                    }
+                    case R.string.UserProfileActivity: {
+                        Intent toLoginActivity = new Intent(context, LoginActivity.class);
+                        context.startActivity(toLoginActivity);
+                        break;
+                    }
+                    default: {
+                        break;
+                    }
+                }
+
+
+                break;
+            }
+
+
+        }
+        if (activityName == R.string.HomeActivity) {
+            DrawerLayout drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawerLayoutHome);
+            drawerLayout.closeDrawer(GravityCompat.START);
+
+        } else if (activityName == R.string.UserProfileActivity) {
+            DrawerLayout drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawerLayoutUserProfile);
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+
+        Toast.makeText(context, item.getTitle() + " - is Selected", Toast.LENGTH_SHORT).show();
+
+
+        return true;
+    }
+}

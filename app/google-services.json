@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "444247160569",
-    "project_id": "contacts-163307"
+    "firebase_url": "https://contacts-163307.firebaseio.com",
+    "project_id": "contacts-163307",
+    "storage_bucket": "contacts-163307.appspot.com"
   },
   "client": [
     {
@@ -12,6 +14,10 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "444247160569-gec6j0qclhiak0hd75kn7fo862hphu1s.apps.googleusercontent.com",
+          "client_type": 3
+        },
         {
           "client_id": "444247160569-bkjgbtva303autsarofcna07rp5b3arl.apps.googleusercontent.com",
           "client_type": 1,
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "444247160569-gec6j0qclhiak0hd75kn7fo862hphu1s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

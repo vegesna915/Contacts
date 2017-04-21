@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".LoginActivity">
 
@@ -21,27 +21,27 @@
         android:gravity="center_horizontal">
 
         <ProgressBar
+            android:id="@+id/progressBar_login"
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar_login"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="180dp"
             android:elevation="8dp"
-            style="?android:attr/progressBarStyleLarge"
             android:visibility="gone" />
 
         <ScrollView
             android:id="@+id/scrollView_login"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="false"
-            android:layout_margin="4dp">
+            android:layout_margin="4dp"
+            android:fillViewport="false">
 
             <LinearLayout
-                android:layout_marginTop="30dp"
                 android:id="@+id/form_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:orientation="vertical"
                 android:paddingBottom="12dp"
                 android:paddingLeft="26dp"
@@ -58,8 +58,8 @@
                         android:layout_height="wrap_content"
                         android:hint=" Email Id "
                         android:inputType="textEmailAddress"
-                        android:maxLines="1"
-                        android:maxLength="30" />
+                        android:maxLength="30"
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
 
@@ -71,26 +71,26 @@
                         android:id="@+id/password_login"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPassword"
+                        android:hint="Password"
                         android:imeActionId="@+id/password_login_by_enter"
                         android:imeActionLabel="Login"
                         android:imeOptions="actionUnspecified"
-                        android:maxLines="1"
+                        android:inputType="textPassword"
                         android:maxLength="20"
-                        android:hint="Password" />
+                        android:maxLines="1" />
                 </android.support.design.widget.TextInputLayout>
 
                 <Button
-                    android:layout_marginTop="20dp"
+                    android:id="@+id/loginButton_login"
                     style="?android:textAppearanceMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:textStyle="bold"
-                    android:text=" Login "
-                    android:id="@+id/loginButton_login"
+                    android:layout_marginTop="20dp"
                     android:background="@color/colorAccent"
-                    android:textColor="@color/colorWhite" />
+                    android:padding="16dp"
+                    android:text=" Login "
+                    android:textColor="@color/colorWhite"
+                    android:textStyle="bold" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -99,18 +99,18 @@
 
                     <Button
                         android:id="@+id/forgotPassword_login"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Forgot Password?"
-                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true"
+                        android:text="Forgot Password?" />
 
                     <Button
                         android:id="@+id/register_login"
+                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        style="@style/Widget.AppCompat.Button.Borderless.Colored"
                         android:text="New User" />
 
                 </RelativeLayout>
@@ -129,7 +129,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
-
 
 
     </RelativeLayout>

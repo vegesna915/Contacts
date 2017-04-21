@@ -5,16 +5,21 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.varma.contacts.Extra.PermissionsClass;
+import com.google.firebase.messaging.FirebaseMessaging;
+
 
 public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        permissionCheck();
         setContentView(R.layout.activity_start);
 
 
-        permissionCheck();
+
 
 
     }
@@ -26,6 +31,8 @@ public class StartActivity extends AppCompatActivity {
 
         if (readCallLog && readContact) {
             Intent toHomeActivity = new Intent(this, HomeActivity.class);
+            toHomeActivity.putExtra(getString(R.string.putExtraPage_HomeActivity), 1);
+            toHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(toHomeActivity);
         } else if (readCallLog) {
 
@@ -43,7 +50,12 @@ public class StartActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Intent toHomeActivity = new Intent(this, HomeActivity.class);
+        toHomeActivity.putExtra(getString(R.string.putExtraPage_HomeActivity), 1);
+        toHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(toHomeActivity);
+
     }
+
+
 }
 

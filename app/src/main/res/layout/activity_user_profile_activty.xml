@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayoutUserProfile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.Toolbar
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:fitsSystemWindows="true"
+    tools:context="com.example.varma.contacts.UserProfileActivty"
+    tools:openDrawer="start">
 
 
-    <include layout="@layout/userprofile_profile"/>
+    <include layout="@layout/userprofile_profile" />
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view_userProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header_home"
+        app:menu="@menu/navmenu_home" />
 
 
-</LinearLayout>
+</android.support.v4.widget.DrawerLayout>

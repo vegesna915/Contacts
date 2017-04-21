@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/userProfile_viewMargin"
+    android:padding="@dimen/userProfile_viewMargin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ContactInfoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/layout_numberContactInfoHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/userProfile_viewMargin">
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/userProfile_viewMargin"
+                android:src="@drawable/ic_phone_purpile" />
+
+            <TextView
+                android:id="@+id/contact_phoneNumberHome"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/userProfile_viewMargin"
+                android:layout_toEndOf="@id/imageView1"
+                android:text="9999999999"
+                android:textColor="#212121" />
+
+            <TextView
+                android:id="@+id/contact_detailPhoneNumberHome"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/contact_phoneNumberHome"
+                android:layout_marginStart="@dimen/userProfile_viewMargin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@+id/imageView1"
+                android:text="Home" />
+
+            <ImageButton
+                android:id="@+id/contact_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:background="@null"
+                android:src="@drawable/ic_more_vert_purpile" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/layout_divider_horizontal" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_ContactInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

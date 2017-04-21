@@ -1,23 +1,27 @@
 package com.example.varma.contacts;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.example.varma.contacts.AsyncTasks.IsNewUser;
+import com.example.varma.contacts.AsyncTasks.LogingIn;
+import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -28,18 +32,17 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    static final int Req_code = 9001;
     EditText passwordView;
     AutoCompleteTextView userIdView;
     Context context;
-
     GoogleApiClient googleApiClient;
-    static final int Req_code = 9001;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +65,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
-
-                if (inputMethodManager.isActive()) {
-                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                }
 
 
+                Utilis.closeKeyboard(context, v);
                 attemptLogin();
 
             }
@@ -98,34 +96,37 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .requestEmail().build();
 
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API,signInOptions).build();
-
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).build();
 
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.googleSignIn_login);
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar(true);
 
-                googleLogIn();
+                if (Utilis.internetConnectionStatus(LoginActivity.this)) {
+                    CheckConnection checkConnection = new CheckConnection();
+                    checkConnection.execute((Void) null);
+                } else {
+                    progressBar(false);
+                    Toast.makeText(context, " Unable to Access Network ", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
-
-
-
-
 
 
     }
 
 
-
-    void googleLogIn(){
+    void googleLogIn() {
 
 
         Intent toGoogle = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-        startActivityForResult(toGoogle,Req_code);
+        startActivityForResult(toGoogle, Req_code);
         googleApiClient.connect();
     }
 
@@ -160,70 +161,97 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         //using another thread
 
-        LogingIn logingIn = new LogingIn(userId, password,this);
+        LogingIn logingIn = new LogingIn(userId, password, this);
         logingIn.execute((Void) null);
 
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(context, " Connection Failed " , Toast.LENGTH_SHORT).show();
+        progressBar(false);
+        Toast.makeText(context, " Connection Failed ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == Req_code){
+        if (requestCode == Req_code) {
 
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 String name = account.getDisplayName();
                 String email = account.getEmail();
                 Uri uri = account.getPhotoUrl();
                 String Id = account.getId();
 
+
                 SharedPreferences sharedPreferences = getSharedPreferences(
                         getString(R.string.loginDetails), Context.MODE_PRIVATE);
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                editor.putBoolean(getString(R.string.loginStatus),true);
-                editor.putBoolean(getString(R.string.loginIsGoogle),true);
-                editor.putString(getString(R.string.loginEmailId),email);
-                editor.putString(getString(R.string.userName),name);
-                editor.putString(getString(R.string.userGmailId),Id);
+                editor.putBoolean(getString(R.string.loginStatus), true);
+                editor.putBoolean(getString(R.string.loginIsGoogle), true);
+                editor.putString(getString(R.string.loginEmail), email);
+                editor.putString(getString(R.string.userName), name);
+                editor.putString(getString(R.string.userGmailId), Id);
 
-                if(uri != null){
+                if (uri != null) {
                     String ImgUrl = uri.toString();
-                    editor.putString(getString(R.string.userImageUrl),ImgUrl);
-                }else{
-                    editor.putString(getString(R.string.userImageUrl),"");
+                    editor.putString(getString(R.string.userImageUrl), ImgUrl);
+                } else {
+                    editor.putString(getString(R.string.userImageUrl), "");
                 }
 
 
                 editor.commit();
-                userIdView.setText(name);
 
                 signOut();
-                Intent toUserProfile = new Intent(this, UserProfileActivty.class);
-                startActivity(toUserProfile);
+
+                IsNewUser isNewUser = new IsNewUser(LoginActivity.this, Id);
+                isNewUser.execute((Void) null);
 
 
-            }else{
+            } else {
                 Toast.makeText(this, "Google SignIn Failed", Toast.LENGTH_SHORT).show();
             }
 
         }
-
+        progressBar(false);
 
     }
 
-    void signOut(){
+    void progressBar(boolean visible) {
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar_login);
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView_login);
+        SignInButton googleSignIn = (SignInButton) findViewById(R.id.googleSignIn_login);
+
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+
+            scrollView.setAlpha(0.3f);
+            scrollView.setClickable(false);
+
+            googleSignIn.setAlpha(0.3f);
+            googleSignIn.setClickable(false);
+        } else {
+            progressBar.setVisibility(View.GONE);
+
+            scrollView.setAlpha(1f);
+            scrollView.setClickable(true);
+
+            googleSignIn.setAlpha(1f);
+            googleSignIn.setClickable(true);
+        }
+    }
+
+    void signOut() {
 
 
-        if(googleApiClient.isConnected()){
+        if (googleApiClient.isConnected()) {
             Auth.GoogleSignInApi.signOut(googleApiClient).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
@@ -233,4 +261,55 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
 
     }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+    }
+
+    class CheckConnection extends AsyncTask<Void, Void, JSONObject> {
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected JSONObject doInBackground(Void... voids) {
+
+            String urlString = "http://byvarma.esy.es/New/checkConnection.php";
+            String parameters = "";
+
+            return WebServiceConnection.getData(urlString, parameters);
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject json) {
+            if (json == null) {
+                Toast.makeText(context, " Server  Connection Error ", Toast.LENGTH_SHORT).show();
+                progressBar(false);
+                return;
+            }
+            String check = "0";
+            try {
+                check = json.getString("_CHECK");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            if (check.equals("1")) {
+                googleLogIn();
+            } else {
+                Toast.makeText(context, " Unable to connect to server " + check, Toast.LENGTH_SHORT).show();
+                progressBar(false);
+            }
+
+
+        }
+    }
+
+
 }

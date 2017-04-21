@@ -2,14 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="none">
         <item
-            android:id="@+id/navItemContacts"
-            android:title="Contacts" />
-        <item
-            android:id="@+id/navItemCallLog"
-            android:title="Call Log" />
-        <item
-            android:id="@+id/navItemFriends"
-            android:title="Friends" />
+            android:id="@+id/navItemHome"
+            android:title="Home" />
         <item
             android:id="@+id/navItemSearch"
             android:title="Search Friend"/>

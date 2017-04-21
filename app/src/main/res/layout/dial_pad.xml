@@ -1,7 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="#fff"
+    android:elevation="5dp"
+    android:padding="5dp">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <ImageButton
+                android:id="@+id/dial_pad_control"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:background="@null"
+                android:clickable="true"
+                android:padding="10dp"
+                android:src="@drawable/ic_down_purpile" />
+
+            <EditText
+                android:id="@+id/editText_dialPad"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/dial_pad_control"
+                android:layout_toStartOf="@+id/back_dial_pad"
+                android:background="@null"
+                android:cursorVisible="false"
+                android:gravity="center"
+                android:hint="Enter Phone Number"
+                android:maxLines="1"
+                android:paddingEnd="@dimen/default_gap"
+                android:paddingStart="@dimen/default_gap"
+                android:textColor="@color/colorPrimaryLight"
+                android:textColorHint="@color/colorPrimaryLight"
+                android:textSize="24sp" />
+
+            <ImageButton
+                android:id="@+id/back_dial_pad"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@null"
+                android:padding="10dp"
+                android:src="@drawable/ic_back_purpile" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/divider_dialPad"
+            layout="@layout/layout_divider_horizontal" />
+
+        <GridView
+            android:id="@+id/gridView_dialPad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnWidth="100dp"
+            android:gravity="center"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth">
+
+        </GridView>
+
+        <android.support.design.widget.FloatingActionButton
+
+            android:id="@+id/fab_dial_pad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/default_gap"
+            android:src="@drawable/ic_phone_white"
+            app:elevation="4dp"
+            app:fabSize="normal" />
+
+    </LinearLayout>
+
+
+</FrameLayout>
