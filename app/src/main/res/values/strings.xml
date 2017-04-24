@@ -6,6 +6,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //shared preferences
     <string name="loginDetails">com.varma.contacts.loginDetails</string>
     <string name="loginStatus">loginStatus</string>
     <string name="loginEmail">loginEmail</string>
@@ -15,6 +17,8 @@
     <string name="userGmailId">userGmailId</string>
     <string name="userNumber">userNumber</string>
     <string name="userDatabaseId">userDatabaseId</string>
+    <string name="userToken">userToken</string>
+
 
     <string name="HomeActivity">homeActivity</string>
     <string name="UserProfileActivity">userProfileActivity</string>

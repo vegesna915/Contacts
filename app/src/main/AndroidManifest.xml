@@ -46,13 +46,13 @@
             android:name=".DialerPadActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <service android:name=".MyFirebaseInstanceIDService">
+        <service android:name=".service.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".service.MyFirebaseMessagingService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -60,6 +60,13 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".SearchActivity"
+            android:parentActivityName=".HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Transparent"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".RequestsActivity"></activity>
     </application>
 
 </manifest>

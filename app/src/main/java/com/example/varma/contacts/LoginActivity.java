@@ -31,6 +31,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -262,13 +263,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
 
-    }
-
-    class CheckConnection extends AsyncTask<Void, Void, JSONObject> {
+    private class CheckConnection extends AsyncTask<Void, Void, JSONObject> {
 
 
         @Override

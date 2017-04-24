@@ -4,24 +4,20 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.example.varma.contacts.Objects.Friend;
-
 import java.util.ArrayList;
 
-/**
- * Created by Varma on 4/18/2017.
- */
+
 
 public class FriendsDb {
 
 
-    private static final String TABLE_FRIENDS = "friends_table";
+    private static final String TABLE_FRIENDS = "FRIENDS_TABLE";
     private static final String FRIENDS_ID = "_ID";
     private static final String FRIENDS_NAME = "_NAME";
     private static final String FRIENDS_EMAIL = "_EMAIL";
     private static final String FRIENDS_NUMBER = "_NUMBER";
-    Activity activity;
+    private Activity activity;
 
     FriendsDb(Activity activity) {
         this.activity = activity;

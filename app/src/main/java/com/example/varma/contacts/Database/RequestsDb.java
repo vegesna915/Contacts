@@ -2,6 +2,7 @@ package com.example.varma.contacts.Database;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -12,22 +13,25 @@ import java.util.ArrayList;
 
 public class RequestsDb {
 
-    private static final String TABLE_REQUESTS = "friends_table";
+    private static final String TABLE_REQUESTS = "REQUESTS_TABLE";
     private static final String REQUEST_ID = "_ID";
     private static final String REQUEST_SENDER_ID = "SENDER_ID";
     private static final String REQUEST_RECEIVER_ID = "RECEIVER_ID";
     private static final String REQUEST_IS_PENDING = "IS_PENDING";
     private static final String REQUEST_IS_ACCEPTED = "IS_ACCEPTED";
-    private Activity activity;
+    private static final String REQUEST_IS_SEND = "IS_SEND";
+    private static final String REQUEST_NAME = "_NAME";
+    private static final String REQUEST_IMAGE = "IMAGE_URL";
+    private Context context;
 
-    public RequestsDb(Activity activity) {
-        this.activity = activity;
+    public RequestsDb(Context context) {
+        this.context = context;
 
     }
 
 
     public void addRequest(Request request) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -36,6 +40,9 @@ public class RequestsDb {
         values.put(REQUEST_RECEIVER_ID, request.getRECEIVER_ID());
         values.put(REQUEST_IS_PENDING, request.getIS_PENDING());
         values.put(REQUEST_IS_ACCEPTED, request.getIS_ACCEPTED());
+        values.put(REQUEST_IS_SEND, request.getIS_SEND());
+        values.put(REQUEST_NAME, request.get_Name());
+        values.put(REQUEST_IMAGE, request.getIMAGE_URL());
         // Inserting Row
         db.insert(TABLE_REQUESTS, null, values);
         db.close(); // Closing database connection
@@ -43,15 +50,10 @@ public class RequestsDb {
 
     // Getting single friend
     public Request getRequest(String id) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Request request = null;
-        String[] columns = {
-                REQUEST_ID,
-                REQUEST_SENDER_ID,
-                REQUEST_RECEIVER_ID,
-                REQUEST_IS_PENDING,
-        };
+        String[] columns = null;
 
         String where = REQUEST_ID + "=?";
 
@@ -66,6 +68,9 @@ public class RequestsDb {
                 request.setRECEIVER_ID(cursor.getString(cursor.getColumnIndex(REQUEST_RECEIVER_ID)));
                 request.setIS_PENDING(cursor.getString(cursor.getColumnIndex(REQUEST_IS_PENDING)));
                 request.setIS_ACCEPTED(cursor.getString(cursor.getColumnIndex(REQUEST_IS_ACCEPTED)));
+                request.setIS_SEND(cursor.getString(cursor.getColumnIndex(REQUEST_IS_SEND)));
+                request.set_Name(cursor.getString(cursor.getColumnIndex(REQUEST_NAME)));
+                request.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(REQUEST_IMAGE)));
                 // return contact
 
             }
@@ -86,7 +91,7 @@ public class RequestsDb {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_REQUESTS;
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -99,6 +104,9 @@ public class RequestsDb {
                 request.setRECEIVER_ID(cursor.getString(cursor.getColumnIndex(REQUEST_RECEIVER_ID)));
                 request.setIS_PENDING(cursor.getString(cursor.getColumnIndex(REQUEST_IS_PENDING)));
                 request.setIS_ACCEPTED(cursor.getString(cursor.getColumnIndex(REQUEST_IS_ACCEPTED)));
+                request.setIS_SEND(cursor.getString(cursor.getColumnIndex(REQUEST_IS_SEND)));
+                request.set_Name(cursor.getString(cursor.getColumnIndex(REQUEST_NAME)));
+                request.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(REQUEST_IMAGE)));
                 // Adding contact to list
                 requests.add(request);
             }
@@ -113,7 +121,7 @@ public class RequestsDb {
     // Getting friend Count
     public int getRequestsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_REQUESTS;
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
@@ -126,7 +134,7 @@ public class RequestsDb {
 
     // Updating single contact
     public int updateRequest(Request request) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -144,7 +152,7 @@ public class RequestsDb {
 
     // Deleting single contact
     public void deleteRequest(String _ID) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.delete(TABLE_REQUESTS, REQUEST_ID + " = ?",
                 new String[]{_ID});

@@ -34,6 +34,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
         this.context = context;
         this.activity = (Activity) context;
         this.googleId = googleId;
+
     }
 
     @Override
@@ -54,8 +55,19 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
+        SharedPreferences sharedPref = activity.getSharedPreferences(
+                activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+        String imageUrl = sharedPref.getString(activity.getString(R.string.userImageUrl), "");
+
+        String token = sharedPref.getString(activity.getString(R.string.userToken), "");
+        if (token.equals("")) {
+            token = FirebaseInstanceId.getInstance().getToken();
+        }
+
         String urlString = "http://byvarma.esy.es/New/isUserNewGoogle.php";
-        String parameters = "GOOGLE_ID=" + googleId;
+        String parameters = "GOOGLE_ID=" + googleId +
+                "&IMAGE_URL=" + imageUrl +
+                "&_TOKEN=" + token;
 
         JSONObject json = WebServiceConnection.getData(urlString, parameters);
 
@@ -73,7 +85,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
         }
 
 
-        getToken();
+        //getToken();
 
         return json;
     }
@@ -105,7 +117,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
                 isNew();
                 break;
             case "0":
-                isNotNew(json);
+                isNotNew();
                 break;
             default:
                 Toast.makeText(context, "not working: \n", Toast.LENGTH_LONG).show();
@@ -145,7 +157,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
         }
     }
 
-    private void isNotNew(JSONObject json) {
+    private void isNotNew() {
 
 
         Intent toUserProfile = new Intent(activity, UserProfileActivty.class);

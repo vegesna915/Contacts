@@ -34,10 +34,20 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
         String name = sharedPref.getString(activity.getString(R.string.userName), "");
         String number = sharedPref.getString(activity.getString(R.string.userNumber), "");
         String email = sharedPref.getString(activity.getString(R.string.loginEmail), "");
+        String imageUrl = sharedPref.getString(activity.getString(R.string.userImageUrl), "");
 
+        String token = sharedPref.getString(activity.getString(R.string.userToken), "");
+        if (token.equals("")) {
+            token = FirebaseInstanceId.getInstance().getToken();
+        }
 
         String urlString = "http://byvarma.esy.es/New/createNewUser.php";
-        String parameters = "GOOGLE_ID=" + googleId + "&_NAME=" + name + "&_NUMBER=" + number + "&_EMAIL=" + email;
+        String parameters = "GOOGLE_ID=" + googleId +
+                "&_NAME=" + name +
+                "&_NUMBER=" + number +
+                "&_EMAIL=" + email +
+                "&IMAGE_URL=" + imageUrl +
+                "&_TOKEN=" + token;
 
         JSONObject json = WebServiceConnection.getData(urlString, parameters);
 
@@ -62,7 +72,7 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(activity.getString(R.string.userDatabaseId), json.getString("_ID"));
             editor.commit();
-            getToken();
+            //getToken();
 
 
             Toast.makeText(activity, "Is Inserted" + json.get("IS_INSERTED").toString(), Toast.LENGTH_SHORT).show();

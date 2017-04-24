@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.LoginActivity;
 import com.example.varma.contacts.R;
+import com.example.varma.contacts.SearchActivity;
 import com.example.varma.contacts.TestActivty;
 
 
@@ -64,6 +65,15 @@ public class NavigationViewHandler implements NavigationView.OnNavigationItemSel
                 break;
             }
             case R.id.navItemSearch: {
+                SharedPreferences sharedPref = activity.getSharedPreferences(
+                        activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+                if (sharedPref.getBoolean(activity.getString(R.string.loginStatus), false)) {
+                    Intent toSearchActivity = new Intent(context, SearchActivity.class);
+                    context.startActivity(toSearchActivity);
+                } else {
+                    Toast.makeText(context, "Login to add Friends", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             }
             case R.id.navItemSettings: {

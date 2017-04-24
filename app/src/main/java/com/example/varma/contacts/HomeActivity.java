@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Adapters.FragmentAdapter_Home;
 import com.example.varma.contacts.Extra.NavigationViewHandler;
@@ -34,7 +33,6 @@ import com.example.varma.contacts.Fragments.HomeFragment_1;
 import com.example.varma.contacts.Fragments.HomeFragment_2;
 import com.example.varma.contacts.Fragments.HomeFragment_3;
 import com.example.varma.contacts.Fragments.HomeFragment_3_notLogedIn;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -218,8 +216,13 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
                         break;
                     }
                     case 2: {
-
-
+                        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
+                        if (sharedPref.getBoolean(getString(R.string.loginStatus), false)) {
+                            Intent toSearchActivity = new Intent(HomeActivity.this, SearchActivity.class);
+                            startActivity(toSearchActivity);
+                        } else {
+                            Toast.makeText(HomeActivity.this, "Login to add Friends", Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     }
                     default: {

@@ -6,7 +6,34 @@ package com.example.varma.contacts.Objects;
 
 public class Request {
 
-    private String REQUEST_ID, SENDER_ID, RECEIVER_ID, IS_PENDING, IS_ACCEPTED;
+    private String REQUEST_ID, SENDER_ID, RECEIVER_ID, IS_PENDING, IS_ACCEPTED, _Name, IMAGE_URL, IS_SEND;
+
+
+    public String get_Name() {
+        return _Name;
+    }
+
+    public void set_Name(String _Name) {
+        this._Name = _Name;
+    }
+
+    public String getIMAGE_URL() {
+        return IMAGE_URL;
+    }
+
+    public void setIMAGE_URL(String IMAGE_URL) {
+        this.IMAGE_URL = IMAGE_URL;
+    }
+
+    public String getIS_SEND() {
+        return IS_SEND;
+    }
+
+    public void setIS_SEND(String IS_SEND) {
+        this.IS_SEND = IS_SEND;
+    }
+
+
 
     public String getREQUEST_ID() {
         return REQUEST_ID;
