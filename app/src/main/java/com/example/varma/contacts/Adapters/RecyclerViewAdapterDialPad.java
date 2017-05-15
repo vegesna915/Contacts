@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerViewAdapterDialPad.MyViewHolder> {
 
-    ArrayList<DialerInfo> infos;
-    Context context;
+    private ArrayList<DialerInfo> infos;
+    private Context context;
 
     public RecyclerViewAdapterDialPad(ArrayList<DialerInfo> infos) {
         this.infos = infos;
@@ -36,7 +36,9 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, int position1) {
+
+        final int position = position1;
 
         if (infos.get(position).getName() == null) {
             holder.nameView.setText(infos.get(position).getNumber());
@@ -95,7 +97,7 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
         ImageButton infoButton;
         View callLayout;
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
             nameView = (TextView) itemView.findViewById(R.id.callerName_dialPadSearch);
             numberView = (TextView) itemView.findViewById(R.id.callerNumber_dialPadSearch);

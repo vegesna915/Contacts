@@ -34,10 +34,6 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
     public RecyclerViewAdapterCallLog(ArrayList<CallLogInfo> callLogs) {
         this.callLogs.addAll(callLogs);
         this.copyCallLogs.addAll(callLogs);
-
-        Log.i("contacts", String.valueOf(callLogs.size()));
-
-
     }
 
     @Override

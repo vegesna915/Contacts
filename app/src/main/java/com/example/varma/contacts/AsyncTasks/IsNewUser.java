@@ -17,6 +17,7 @@ import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.example.varma.contacts.ProfileEditActivity;
 import com.example.varma.contacts.R;
 import com.example.varma.contacts.UserProfileActivty;
+import com.example.varma.contacts.service.SyncDataService;
 import com.google.android.gms.common.SignInButton;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -99,7 +100,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(activity.getString(R.string.loginStatus), false);
-            editor.commit();
+            editor.apply();
             Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -159,6 +160,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
 
     private void isNotNew() {
 
+        callSyncDataService();
 
         Intent toUserProfile = new Intent(activity, UserProfileActivty.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
@@ -177,43 +179,13 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
         }
     }
 
-    private void getToken() {
-        String token = FirebaseInstanceId.getInstance().getToken();
+    private void callSyncDataService() {
 
-
-        if (token == null || token.equals("")) {
-            Log.i("token", "Token not received");
-            return;
-        }
-
-        Log.i("token", token);
-
-        SharedPreferences sharedPref = activity.getSharedPreferences(
-                activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
-        boolean isLogin = sharedPref.getBoolean(activity.getString(R.string.loginStatus), false);
-
-        if (!isLogin) {
-            return;
-        }
-
-
-        String _ID = sharedPref.getString(activity.getString(R.string.userDatabaseId), "0");
-        String url = "http://byvarma.esy.es/New/saveToken.php";
-        String parameters = "_ID=" + _ID + "&_TOKEN=" + token;
-
-        Log.i("token", "sending token");
-        JSONObject json = WebServiceConnection.getData(url, parameters);
-        if (json == null) {
-
-            Log.i("token", "saveToken.php error");
-        }
-
-        try {
-            Log.i("token", "Inserted : " + json.getString("INSERTED"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Intent startSyncDataService = new Intent(activity, SyncDataService.class);
+        activity.startService(startSyncDataService);
 
     }
+
+
 
 }

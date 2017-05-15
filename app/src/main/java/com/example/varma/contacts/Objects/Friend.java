@@ -1,12 +1,24 @@
 package com.example.varma.contacts.Objects;
 
-/**
- * Created by Varma on 4/17/2017.
- */
+
+import com.example.varma.contacts.Extra.Utilis;
 
 public class Friend {
 
-    private String _NAME, _NUMBER, _EMAIL, _ID, _NUMBER_OLD;
+    private String _NAME, _NUMBER, _EMAIL, _ID, _NUMBER_OLD, IMAGE_URL, firstLetter;
+
+    public String getFirstLetter() {
+        return firstLetter;
+    }
+
+
+    public String getIMAGE_URL() {
+        return IMAGE_URL;
+    }
+
+    public void setIMAGE_URL(String IMAGE_URL) {
+        this.IMAGE_URL = IMAGE_URL;
+    }
 
     public String get_NAME() {
         return _NAME;
@@ -14,6 +26,7 @@ public class Friend {
 
     public void set_NAME(String _NAME) {
         this._NAME = _NAME;
+        this.firstLetter = Utilis.getFirstLetter(_NAME);
     }
 
     public String get_NUMBER() {

@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Extra.NavigationViewHandler;
 import com.example.varma.contacts.Extra.Utilis;
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class UserProfileActivty extends AppCompatActivity {
 
@@ -100,7 +100,7 @@ public class UserProfileActivty extends AppCompatActivity {
         View navHeaderView = navigationView.getHeaderView(0);
         FrameLayout navHeaderLayout = (FrameLayout) navHeaderView.findViewById(R.id.nav_header_home);
         TextView navHeaderTextView = (TextView) navHeaderLayout.findViewById(R.id.textview_navheader_home);
-        CircleImageView navHeaderProfilePic = (CircleImageView) navHeaderLayout.findViewById(R.id.imageview_navheader_home);
+        CircularImageView navHeaderProfilePic = (CircularImageView) navHeaderLayout.findViewById(R.id.imageview_navheader_home);
         navHeaderProfilePic.setImageResource(R.drawable.ic_account_circle);
         if (isLogin) {
             navHeaderTextView.setText("Click here to see Profile");

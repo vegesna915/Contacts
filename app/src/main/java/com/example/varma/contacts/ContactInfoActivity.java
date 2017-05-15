@@ -45,9 +45,11 @@ public class ContactInfoActivity extends AppCompatActivity {
         contact.setContactId(getIntent().getStringExtra("contactId"));
         contact.setContactNumber(getIntent().getStringExtra("contactNumber"));
         contact.setContactName(getIntent().getStringExtra("contactName"));
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(contact.getContactName());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-        getSupportActionBar().setTitle(contact.getContactName());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         TextView contactNumberView = (TextView) findViewById(R.id.contact_phoneNumberHome);
         contactNumberView.setText(contact.getContactNumber());

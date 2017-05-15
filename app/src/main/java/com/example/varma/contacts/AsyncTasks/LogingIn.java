@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.varma.contacts.R;
 import com.example.varma.contacts.UserProfileActivty;
+import com.example.varma.contacts.service.SyncDataService;
 import com.google.android.gms.common.SignInButton;
 
 
@@ -36,7 +37,7 @@ public class LogingIn extends AsyncTask<Void, Void, Boolean> {
 
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -95,6 +96,7 @@ public class LogingIn extends AsyncTask<Void, Void, Boolean> {
             editor.putString(activity.getString(R.string.loginEmail), userId);
             editor.commit();
 
+
             callUserProfileActivity();
 
 
@@ -122,5 +124,6 @@ public class LogingIn extends AsyncTask<Void, Void, Boolean> {
             e.printStackTrace();
         }
     }
+
 
 }

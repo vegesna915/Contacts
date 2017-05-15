@@ -1,7 +1,8 @@
 package com.example.varma.contacts.Database;
 
-import android.app.Activity;
+
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.example.varma.contacts.Objects.Friend;
@@ -17,16 +18,19 @@ public class FriendsDb {
     private static final String FRIENDS_NAME = "_NAME";
     private static final String FRIENDS_EMAIL = "_EMAIL";
     private static final String FRIENDS_NUMBER = "_NUMBER";
-    private Activity activity;
+    private static final String FRIENDS_IMAGE_URL = "IMAGE_URL";
+    private static final String FRIENDS_OLD_NUMBER = "OLD_NUMBER";
 
-    FriendsDb(Activity activity) {
-        this.activity = activity;
+    private Context context;
+
+    public FriendsDb(Context context) {
+        this.context = context;
 
     }
 
 
     public void addFriend(Friend friend) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -34,6 +38,9 @@ public class FriendsDb {
         values.put(FRIENDS_NAME, friend.get_NAME()); // Friend Name
         values.put(FRIENDS_NUMBER, friend.get_NUMBER()); // Friend Phone Number
         values.put(FRIENDS_EMAIL, friend.get_EMAIL()); // Friend Email
+        values.put(FRIENDS_IMAGE_URL, friend.getIMAGE_URL()); // Friend IMAGE
+        values.put(FRIENDS_OLD_NUMBER, friend.get_NUMBER_OLD()); // Friend OLD NUMBER
+
         // Inserting Row
         db.insert(TABLE_FRIENDS, null, values);
         db.close(); // Closing database connection
@@ -41,7 +48,7 @@ public class FriendsDb {
 
     // Getting single friend
     public Friend getFriend(String email) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Friend friend = null;
         String[] columns = {
@@ -49,6 +56,8 @@ public class FriendsDb {
                 FRIENDS_NAME,
                 FRIENDS_NUMBER,
                 FRIENDS_EMAIL,
+                FRIENDS_IMAGE_URL,
+                FRIENDS_OLD_NUMBER
         };
 
         String where = FRIENDS_EMAIL + "=?";
@@ -63,6 +72,8 @@ public class FriendsDb {
                 friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
                 friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
                 friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));
+                friend.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(FRIENDS_IMAGE_URL)));
+                friend.set_NUMBER_OLD(cursor.getString(cursor.getColumnIndex(FRIENDS_OLD_NUMBER)));
                 // return contact
 
             }
@@ -75,7 +86,7 @@ public class FriendsDb {
     }
 
     // Getting All friend
-    public ArrayList<Friend> getAllFriend() {
+    public ArrayList<Friend> getAllFriends() {
 
         ArrayList<Friend> friends = new ArrayList<>();
         Friend friend;
@@ -83,7 +94,7 @@ public class FriendsDb {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_FRIENDS;
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -91,9 +102,13 @@ public class FriendsDb {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 friend = new Friend();
+
+                friend.set_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_ID)));
                 friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
                 friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
                 friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));
+                friend.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(FRIENDS_IMAGE_URL)));
+                friend.set_NUMBER_OLD(cursor.getString(cursor.getColumnIndex(FRIENDS_OLD_NUMBER)));
                 // Adding contact to list
                 friends.add(friend);
             }
@@ -108,25 +123,29 @@ public class FriendsDb {
     // Getting friend Count
     public int getFriendsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_FRIENDS;
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
         cursor.close();
+
         db.close();
 
         // return count
-        return cursor.getCount();
+        return count;
     }
 
     // Updating single contact
     public int updateFriend(Friend friend) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(FRIENDS_NAME, friend.get_NAME());
-        values.put(FRIENDS_NUMBER, friend.get_NUMBER());
-        values.put(FRIENDS_EMAIL, friend.get_EMAIL());
+        values.put(FRIENDS_NAME, friend.get_NAME()); // Friend Name
+        values.put(FRIENDS_NUMBER, friend.get_NUMBER()); // Friend Phone Number
+        values.put(FRIENDS_EMAIL, friend.get_EMAIL()); // Friend Email
+        values.put(FRIENDS_IMAGE_URL, friend.getIMAGE_URL()); // Friend IMAGE
+        values.put(FRIENDS_OLD_NUMBER, friend.get_NUMBER_OLD()); // Friend OLD NUMBER
 
         // updating row
 
@@ -139,10 +158,17 @@ public class FriendsDb {
 
     // Deleting single contact
     public void deleteFriend(String _ID) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(activity);
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.delete(TABLE_FRIENDS, FRIENDS_ID + " = ?",
                 new String[]{_ID});
+        db.close();
+    }
+
+    public void deleteAllFriends() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        db.delete(TABLE_FRIENDS, null, null);
         db.close();
     }
 

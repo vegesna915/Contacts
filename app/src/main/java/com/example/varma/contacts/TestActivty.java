@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.varma.contacts.AsyncTasks.GetAllData;
 import com.example.varma.contacts.Database.RequestsDb;
 import com.example.varma.contacts.Objects.Request;
 
@@ -33,22 +34,8 @@ public class TestActivty extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String a = editText.getText().toString();
-                RequestsDb requestsDb = new RequestsDb(getApplicationContext());
-                Request request = requestsDb.getRequest(a);
-
-                if (request == null) {
-                    textView.setText(" Request not registered ");
-                } else {
-                    String name = request.get_Name();
-                    String _id = request.getREQUEST_ID();
-
-                    textView.setText(_id + " " + name + " ");
-                }
-
-
-
-
+                GetAllData getAllData = new GetAllData(TestActivty.this);
+                getAllData.execute((Void) null);
             }
         });
 

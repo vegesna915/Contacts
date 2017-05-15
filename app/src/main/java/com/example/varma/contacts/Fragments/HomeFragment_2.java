@@ -25,9 +25,7 @@ import com.example.varma.contacts.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by Varma on 3/27/2017.
- */
+
 
 public class HomeFragment_2 extends Fragment {
 
@@ -151,5 +149,9 @@ public class HomeFragment_2 extends Fragment {
 
     }
 
-
+    public void refreshContacts() {
+        contacts.clear();
+        getContacts();
+        adapter.refreshContacts(contacts);
+    }
 }

@@ -15,6 +15,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String FRIENDS_NAME = "_NAME";
     private static final String FRIENDS_EMAIL = "_EMAIL";
     private static final String FRIENDS_NUMBER = "_NUMBER";
+    private static final String FRIENDS_IMAGE_URL = "IMAGE_URL";
+    private static final String FRIENDS_OLD_NUMBER = "OLD_NUMBER";
 
     private static final String REQUEST_ID = "_ID";
     private static final String REQUEST_SENDER_ID = "SENDER_ID";
@@ -37,7 +39,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + FRIENDS_ID + " TEXT PRIMARY KEY,"
                 + FRIENDS_NAME + " TEXT,"
                 + FRIENDS_NUMBER + " TEXT,"
-                + FRIENDS_EMAIL + " TEXT"
+                + FRIENDS_EMAIL + " TEXT,"
+                + FRIENDS_IMAGE_URL + " TEXT,"
+                + FRIENDS_OLD_NUMBER + " TEXT"
                 + ")";
         db.execSQL(CREATE_FRIENDS_TABLE);
 

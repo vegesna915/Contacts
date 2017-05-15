@@ -1,13 +1,12 @@
 package com.example.varma.contacts.Database;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.example.varma.contacts.Objects.Request;
-
+import com.example.varma.contacts.R;
 import java.util.ArrayList;
 
 
@@ -26,7 +25,6 @@ public class RequestsDb {
 
     public RequestsDb(Context context) {
         this.context = context;
-
     }
 
 
@@ -77,7 +75,6 @@ public class RequestsDb {
             cursor.close();
         }
 
-
         db.close();
         return request;
     }
@@ -116,6 +113,89 @@ public class RequestsDb {
         // return contact list
         return requests;
 
+    }
+
+    public ArrayList<Request> getSendRequests() {
+        ArrayList<Request> requests = new ArrayList<>();
+        Request request;
+
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+
+        String _ID = sharedPref.getString(context.getString(R.string.userDatabaseId), "");
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_REQUESTS + " WHERE " +
+                REQUEST_SENDER_ID + " = ? AND " +
+                REQUEST_IS_PENDING + " = ?;";
+        String[] selectArgs = {_ID, "1"};
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, selectArgs);
+
+        // looping through all rows and adding to list
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                request = new Request();
+                request.setREQUEST_ID(cursor.getString(cursor.getColumnIndex(REQUEST_ID)));
+                request.setSENDER_ID(cursor.getString(cursor.getColumnIndex(REQUEST_SENDER_ID)));
+                request.setRECEIVER_ID(cursor.getString(cursor.getColumnIndex(REQUEST_RECEIVER_ID)));
+                request.setIS_PENDING(cursor.getString(cursor.getColumnIndex(REQUEST_IS_PENDING)));
+                request.setIS_ACCEPTED(cursor.getString(cursor.getColumnIndex(REQUEST_IS_ACCEPTED)));
+                request.setIS_SEND(cursor.getString(cursor.getColumnIndex(REQUEST_IS_SEND)));
+                request.set_Name(cursor.getString(cursor.getColumnIndex(REQUEST_NAME)));
+                request.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(REQUEST_IMAGE)));
+                // Adding contact to list
+                requests.add(request);
+            }
+            cursor.close();
+        }
+        db.close();
+        // return contact list
+        return requests;
+    }
+
+    public ArrayList<Request> getReceivedRequests() {
+        ArrayList<Request> requests = new ArrayList<>();
+        Request request;
+
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+
+        String _ID = sharedPref.getString(context.getString(R.string.userDatabaseId), "");
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_REQUESTS + " WHERE " +
+                REQUEST_RECEIVER_ID + " = ? AND " +
+                REQUEST_IS_PENDING + " = ?;";
+
+        String[] selectArgs = {_ID, "1"};
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, selectArgs);
+
+        // looping through all rows and adding to list
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                request = new Request();
+                request.setREQUEST_ID(cursor.getString(cursor.getColumnIndex(REQUEST_ID)));
+                request.setSENDER_ID(cursor.getString(cursor.getColumnIndex(REQUEST_SENDER_ID)));
+                request.setRECEIVER_ID(cursor.getString(cursor.getColumnIndex(REQUEST_RECEIVER_ID)));
+                request.setIS_PENDING(cursor.getString(cursor.getColumnIndex(REQUEST_IS_PENDING)));
+                request.setIS_ACCEPTED(cursor.getString(cursor.getColumnIndex(REQUEST_IS_ACCEPTED)));
+                request.setIS_SEND(cursor.getString(cursor.getColumnIndex(REQUEST_IS_SEND)));
+                request.set_Name(cursor.getString(cursor.getColumnIndex(REQUEST_NAME)));
+                request.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(REQUEST_IMAGE)));
+                // Adding contact to list
+                requests.add(request);
+            }
+            cursor.close();
+        }
+        db.close();
+        // return contact list
+        return requests;
     }
 
     // Getting friend Count
@@ -158,4 +238,27 @@ public class RequestsDb {
                 new String[]{_ID});
         db.close();
     }
+
+    public void deleteAllRequests() {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        db.delete(TABLE_REQUESTS, null, null);
+    }
+
+    public void requestAccepted(String _ID) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(REQUEST_IS_PENDING, "0");
+        values.put(REQUEST_IS_ACCEPTED, "1");
+
+        String where = REQUEST_ID + " = ?";
+        String[] selectionArgs = {_ID};
+
+        db.update(TABLE_REQUESTS, values, where, selectionArgs);
+        db.close();
+    }
+
 }

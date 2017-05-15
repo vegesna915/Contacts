@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,10 +34,12 @@ import com.example.varma.contacts.Fragments.HomeFragment_1;
 import com.example.varma.contacts.Fragments.HomeFragment_2;
 import com.example.varma.contacts.Fragments.HomeFragment_3;
 import com.example.varma.contacts.Fragments.HomeFragment_3_notLogedIn;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 
 
 public class HomeActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -99,6 +102,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         homeFragment3 = new HomeFragment_3();
         fragments = new ArrayList<>();
         navigationView = (NavigationView) findViewById(R.id.navViewHome);
+
     }
 
     void toolbar() {
@@ -124,6 +128,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles.get(0)));
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles.get(1)));
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles.get(2)));
+
     }
 
     void viewPager() {
@@ -246,7 +251,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         View navHeaderView = navigationView.getHeaderView(0);
         FrameLayout navHeaderLayout = (FrameLayout) navHeaderView.findViewById(R.id.nav_header_home);
         TextView navHeaderTextView = (TextView) navHeaderLayout.findViewById(R.id.textview_navheader_home);
-        CircleImageView navHeaderProfilePic = (CircleImageView) navHeaderLayout.findViewById(R.id.imageview_navheader_home);
+        CircularImageView navHeaderProfilePic = (CircularImageView) navHeaderLayout.findViewById(R.id.imageview_navheader_home);
         navHeaderProfilePic.setImageResource(R.drawable.ic_account_circle);
         if (isLogin) {
             navHeaderTextView.setText("Click here to see User Profile");
@@ -368,22 +373,38 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if (!isFirstResume) {
 
-            if (isLogin == sharedPref.getBoolean(getString(R.string.loginStatus), false)) {
-
-                homeFragment1.notifyCallLogChanged();
-
-            } else {
+            homeFragment2.refreshContacts();
+            homeFragment1.notifyCallLogChanged();
+            if (isLogin != sharedPref.getBoolean(getString(R.string.loginStatus), false)) {
 
                 isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
-                fragments.clear();
+                /*fragments.clear();
                 viewPager();
-                navigationView();
+                navigationView();*/
+
+                if (isLogin) {
+                    //fragments.add(new HomeFragment_3());
+                    homeFragment3 = new HomeFragment_3();
+                    fragmentAdapter.changeFragment3(homeFragment3);
+                } else {
+                    fragmentAdapter.changeFragment3(new HomeFragment_3_notLogedIn());
+                }
             }
+
+            if (isLogin) {
+                Log.i("onPause", "1");
+                homeFragment3.refreshFriends();
+            }
+
+
+
+
         }
     }
 
     @Override
     protected void onPause() {
+
         super.onPause();
         isFirstResume = false;
     }

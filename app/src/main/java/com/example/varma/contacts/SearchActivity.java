@@ -22,7 +22,7 @@ import com.example.varma.contacts.Extra.WebServiceConnection;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class SearchActivity extends AppCompatActivity {
     String email;
@@ -31,7 +31,7 @@ public class SearchActivity extends AppCompatActivity {
     CardView cardViewSearch, cardViewDetails;
     ProgressBar progressBar;
     View layout;
-    CircleImageView circleImageView;
+    CircularImageView circleImageView;
     TextView userNameText;
     Button sendRequestButton;
     String userId, userName, userImage;
@@ -51,7 +51,7 @@ public class SearchActivity extends AppCompatActivity {
         cardViewDetails = (CardView) findViewById(R.id.cardView_userDetails_search);
         Button searchButton = (Button) findViewById(R.id.searchButton_search);
         layout = findViewById(R.id.Layout_search);
-        circleImageView = (CircleImageView) findViewById(R.id.userImage_search);
+        circleImageView = (CircularImageView) findViewById(R.id.userImage_search);
         userNameText = (TextView) findViewById(R.id.userName_search);
         sendRequestButton = (Button) findViewById(R.id.sendRequest);
 

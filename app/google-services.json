@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "444247160569-tfgmsvaj9jj9pdk2r3crvrq4ut429dud.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.varma.contacts",
+            "certificate_hash": "f74931ff630ab1ffc3c5d32084b7de4d5a698cac"
+          }
+        },
+        {
           "client_id": "444247160569-gec6j0qclhiak0hd75kn7fo862hphu1s.apps.googleusercontent.com",
           "client_type": 3
         },

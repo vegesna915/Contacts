@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="HardcodedText">
     <group android:checkableBehavior="none">
         <item
             android:id="@+id/navItemHome"
@@ -8,8 +10,8 @@
             android:id="@+id/navItemSearch"
             android:title="Search Friend"/>
         <item
-            android:id="@+id/navItemRequestStatus"
-            android:title="Request Status"/>
+            android:id="@+id/navItemRequests"
+            android:title="Requests" />
 
         <item
             android:id="@+id/navItemSettings"

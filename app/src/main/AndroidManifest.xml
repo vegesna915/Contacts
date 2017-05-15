@@ -66,7 +66,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".RequestsActivity"></activity>
+        <activity
+            android:name=".RequestsActivity"
+            android:label="Requests"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".FriendProfileActivity"
+            android:label="Profile"
+            android:parentActivityName=".HomeActivity" />
+
+        <service
+            android:name=".service.SyncDataService"
+            android:exported="false" />
     </application>
 
 </manifest>

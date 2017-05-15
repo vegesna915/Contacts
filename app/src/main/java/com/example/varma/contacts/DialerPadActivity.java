@@ -330,8 +330,9 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
 
                     infos.add(info);
 
-                    cursorContacts.close();
+
                 }
+                cursorContacts.close();
 
             }
 

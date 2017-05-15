@@ -146,4 +146,10 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
     }
 
 
+    public void refreshContacts(ArrayList<Contact> contacts) {
+        this.contacts.clear();
+        this.contacts.addAll(contacts);
+        notifyDataSetChanged();
+    }
+
 }

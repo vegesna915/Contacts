@@ -1,6 +1,6 @@
 package com.example.varma.contacts.Fragments;
 
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterCallLog;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Extra.PermissionsClass;
@@ -29,11 +28,11 @@ import java.util.ArrayList;
 public class HomeFragment_1 extends Fragment {
 
     public RecyclerViewAdapterCallLog adapter;
-    Activity activity;
     private ArrayList<CallLogInfo> callLogs;
     private boolean hasPermission;
     private RecyclerView recyclerView;
 
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -118,7 +117,7 @@ public class HomeFragment_1 extends Fragment {
                     callLog.setCallType(
                             cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.TYPE)));
 
-                    String isNew = cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.NEW));
+                    /*String isNew = cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.NEW));
 
                     if (isNew.equals("1")) {
                         Uri uriNumber = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -145,17 +144,19 @@ public class HomeFragment_1 extends Fragment {
                                 selectionArgsNumber, sortingOrderNumber);
 
 
-                        while (cursorContacts.moveToNext()) {
+                        if (cursorContacts != null) {
+                            while (cursorContacts.moveToNext()) {
 
-                            callLog.setCallerName(
-                                    cursorContacts.getString(cursorContacts.getColumnIndex(
-                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                                callLog.setCallerName(
+                                        cursorContacts.getString(cursorContacts.getColumnIndex(
+                                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
 
+                            }
                         }
 
 
                         cursorContacts.close();
-                    }
+                    }*/
 
                     callLogs.add(callLog);
 
@@ -176,7 +177,6 @@ public class HomeFragment_1 extends Fragment {
     }
 
     public void notifyCallLogChanged() {
-
         getCallLog();
         adapter.updateCallLog(callLogs);
 

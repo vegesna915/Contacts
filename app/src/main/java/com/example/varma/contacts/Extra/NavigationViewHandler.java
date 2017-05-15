@@ -12,18 +12,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.varma.contacts.Database.FriendsDb;
+import com.example.varma.contacts.Database.RequestsDb;
 import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.LoginActivity;
 import com.example.varma.contacts.R;
+import com.example.varma.contacts.RequestsActivity;
 import com.example.varma.contacts.SearchActivity;
 import com.example.varma.contacts.TestActivty;
 
 
 public class NavigationViewHandler implements NavigationView.OnNavigationItemSelectedListener {
 
-    Context context;
-    Activity activity;
-    int activityName;
+    private Context context;
+    private Activity activity;
+    private int activityName;
 
 
     public NavigationViewHandler(Context context, Activity activity, int activityName) {
@@ -61,7 +64,18 @@ public class NavigationViewHandler implements NavigationView.OnNavigationItemSel
             }
 
 
-            case R.id.navItemRequestStatus: {
+            case R.id.navItemRequests: {
+
+                SharedPreferences sharedPref = activity.getSharedPreferences(
+                        activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+                if (sharedPref.getBoolean(activity.getString(R.string.loginStatus), false)) {
+                    Intent toRequestsActivity = new Intent(activity, RequestsActivity.class);
+                    activity.startActivity(toRequestsActivity);
+                } else {
+                    Toast.makeText(context, "Login to see Requests", Toast.LENGTH_SHORT).show();
+                }
+
+
                 break;
             }
             case R.id.navItemSearch: {
@@ -107,13 +121,19 @@ public class NavigationViewHandler implements NavigationView.OnNavigationItemSel
                 editor.putString(context.getString(R.string.userGmailId), "");
                 editor.putString(context.getString(R.string.userNumber), "");
 
-                editor.commit();
+                FriendsDb friendsDb = new FriendsDb(activity);
+                friendsDb.deleteAllFriends();
+
+                RequestsDb requestsDb = new RequestsDb(activity);
+                requestsDb.deleteAllRequests();
+
+                editor.apply();
 
                 switch (activityName) {
                     case R.string.HomeActivity: {
 
                         Intent toHomeActivity = new Intent(context, HomeActivity.class);
-                        toHomeActivity.putExtra(activity.getString(R.string.putExtraPage_HomeActivity), 0);
+                        toHomeActivity.putExtra(activity.getString(R.string.putExtraPage_HomeActivity), 1);
                         toHomeActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         context.startActivity(toHomeActivity);
                         break;

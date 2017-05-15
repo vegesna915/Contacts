@@ -26,19 +26,26 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/imageview_navheader_home"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_account_circle" />
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_account_circle"
+            android:elevation="6dp"
+            app:civ_border="true"
+            app:civ_border_color="#EEEEEE"
+            app:civ_border_width="4dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="@color/cardview_dark_background"
+            app:civ_shadow_radius="6" />
 
         <TextView
+            android:layout_marginTop="5dip"
             android:id="@+id/textview_navheader_home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="16dp"
-            android:text="Click here to Login"
+            android:text=" Log In "
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textColor="@color/colorWhite"
             android:textSize="18sp" />

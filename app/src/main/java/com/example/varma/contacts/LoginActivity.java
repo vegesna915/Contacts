@@ -182,6 +182,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
+                if (account == null) {
+                    Toast.makeText(this, "Google SignIn Failed ", Toast.LENGTH_SHORT).show();
+                    progressBar(false);
+                    return;
+                }
                 String name = account.getDisplayName();
                 String email = account.getEmail();
                 Uri uri = account.getPhotoUrl();
@@ -285,7 +290,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         @Override
         protected void onPostExecute(JSONObject json) {
             if (json == null) {
-                Toast.makeText(context, " Server  Connection Error ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, " Server Connection Error ", Toast.LENGTH_SHORT).show();
                 progressBar(false);
                 return;
             }

@@ -1,13 +1,63 @@
 package com.example.varma.contacts;
 
+
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+
+import com.example.varma.contacts.Adapters.FragmentAdapter_Requests;
+import com.example.varma.contacts.Fragments.ReceiveRequestFragment;
+import com.example.varma.contacts.Fragments.SendRequestFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RequestsActivity extends AppCompatActivity {
+
+    TabLayout tabLayout;
+    List<String> tabTitles = new ArrayList<>();
+    List<Fragment> fragments = new ArrayList<>();
+    ViewPager viewPager;
+    SendRequestFragment sendRequestFragment;
+    ReceiveRequestFragment receiveRequestFragment;
+    FragmentAdapter_Requests fragmentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requests);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_requests);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+
+        tabLayout = (TabLayout) findViewById(R.id.tabbar_requests);
+        viewPager = (ViewPager) findViewById(R.id.viewpager_requests);
+
+        sendRequestFragment = new SendRequestFragment();
+        receiveRequestFragment = new ReceiveRequestFragment();
+
+        tabTitles.add("Received");
+        tabTitles.add("Sent");
+
+        tabLayout.addTab(tabLayout.newTab().setText(tabTitles.get(0)));
+        tabLayout.addTab(tabLayout.newTab().setText(tabTitles.get(1)));
+
+        fragments.add(receiveRequestFragment);
+        fragments.add(sendRequestFragment);
+
+
+        viewPager.setOffscreenPageLimit(1);
+        fragmentAdapter = new FragmentAdapter_Requests(getSupportFragmentManager(), tabTitles, fragments);
+        viewPager.setAdapter(fragmentAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 }
