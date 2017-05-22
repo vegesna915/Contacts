@@ -82,7 +82,6 @@ public class ProfileEditActivity extends AppCompatActivity {
         editor.putString(getString(R.string.userName), name);
         editor.putString(getString(R.string.userNumber), number);
 
-
         editor.commit();
 
         if (isNew) {
