@@ -1,16 +1,15 @@
 package com.example.varma.contacts.AsyncTasks;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.example.varma.contacts.R;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +23,7 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
         this.activity = activity;
     }
 
+    @SuppressLint("ApplySharedPref")
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
@@ -74,8 +74,6 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
             editor.commit();
             //getToken();
 
-
-            Toast.makeText(activity, "Is Inserted" + json.get("IS_INSERTED").toString(), Toast.LENGTH_SHORT).show();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -86,39 +84,8 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
     @Override
     protected void onPostExecute(JSONObject json) {
 
-        if (json == null) {
-            return;
-        }
 
 
     }
 
-    private void getToken() {
-
-        String token = FirebaseInstanceId.getInstance().getToken();
-        if (token == null || token.equals("")) {
-            Log.i("token", "Token not received");
-            return;
-        }
-
-        SharedPreferences sharedPref = activity.getSharedPreferences(
-                activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
-        boolean isLogin = sharedPref.getBoolean(activity.getString(R.string.loginStatus), false);
-
-        if (!isLogin) {
-            return;
-        }
-
-
-        String _ID = sharedPref.getString(activity.getString(R.string.userDatabaseId), "0");
-        String url = "http://byvarma.esy.es/New/saveToken.php";
-        String parameters = "_ID=" + _ID + "&_TOKEN=" + token;
-
-        JSONObject json = WebServiceConnection.getData(url, parameters);
-        if (json == null) {
-
-            Log.i("token", "saveToken.php error");
-        }
-
-    }
 }

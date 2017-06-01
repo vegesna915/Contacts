@@ -1,8 +1,9 @@
 package com.example.varma.contacts.Extra;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.util.Log;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
@@ -32,6 +33,9 @@ public class Utilis {
 
     public static String getFirstLetter(String name) {
         name = name.trim();
+        if (name.length() <= 0) {
+            return " ";
+        }
         String c = Character.toString(name.charAt(0));
         if (Pattern.matches("[a-zA-Z]", c)) {
             return c;
@@ -74,6 +78,7 @@ public class Utilis {
 
     }
 
+    @SuppressLint("SimpleDateFormat")
     public static String getDateCallLog(String date) {
 
         int d, cd, m, cm;
@@ -106,7 +111,6 @@ public class Utilis {
         ArrayList<CallLogInfo> callLogs = new ArrayList<>();
         callLogs.addAll(callLogInfos);
 
-        Log.i("contacts", "1");
         boolean temp;
         int i = 0;
         int j;
@@ -118,6 +122,7 @@ public class Utilis {
                         &&
                         callLogs.get(i).getCallType().equals(callLogs.get(i + 1).getCallType())) {
                     copyCalls = copyCalls + 1;
+
                     callLogs.remove(i + 1);
                     temp = true;
 
@@ -146,40 +151,40 @@ public class Utilis {
 
         switch (i) {
             case 0: {
-                color = context.getResources().getColor(R.color.yellowA400);
+                color = ContextCompat.getColor(context, R.color.yellowA400);
                 break;
             }
             case 1: {
-                color = context.getResources().getColor(R.color.cyanA400);
+                color = ContextCompat.getColor(context, R.color.cyanA400);
                 break;
             }
             case 2: {
-                color = context.getResources().getColor(R.color.tealA400);
+                color = ContextCompat.getColor(context, R.color.tealA400);
                 break;
             }
             case 3: {
-                color = context.getResources().getColor(R.color.purpleA200);
+                color = ContextCompat.getColor(context, R.color.purpleA200);
                 break;
             }
             case 4: {
-                color = context.getResources().getColor(R.color.pink400);
+                color = ContextCompat.getColor(context, R.color.pink400);
                 break;
             }
             case 5: {
-                color = context.getResources().getColor(R.color.orangeA400);
+                color = ContextCompat.getColor(context, R.color.orangeA400);
                 break;
             }
             case 6: {
-                color = context.getResources().getColor(R.color.limeA400);
+                color = ContextCompat.getColor(context, R.color.limeA400);
                 break;
             }
             case 7: {
-                color = context.getResources().getColor(R.color.lightBlueA400);
+                color = ContextCompat.getColor(context, R.color.lightBlueA400);
                 break;
             }
 
             default: {
-                color = context.getResources().getColor(R.color.colorAccent);
+                color = ContextCompat.getColor(context, R.color.colorAccent);
                 break;
             }
         }

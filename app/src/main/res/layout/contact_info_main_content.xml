@@ -7,11 +7,13 @@
     android:layout_marginTop="@dimen/userProfile_viewMargin"
     android:padding="@dimen/userProfile_viewMargin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ContactInfoActivity">
+    tools:context=".ContactInfoActivity"
+    tools:ignore="HardcodedText">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:descendantFocusability="blocksDescendants"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -26,6 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/userProfile_viewMargin"
+                android:contentDescription="Image"
                 android:src="@drawable/ic_phone_purpile" />
 
             <TextView
@@ -56,6 +59,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
                 android:background="@null"
+                android:contentDescription="Image"
                 android:src="@drawable/ic_more_vert_purpile" />
 
         </RelativeLayout>

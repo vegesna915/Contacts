@@ -2,12 +2,11 @@ package com.example.varma.contacts.Fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,18 +46,20 @@ public class HomeFragment_3 extends Fragment {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 getString(R.string.loginDetails), Context.MODE_PRIVATE);
         isLogin = sharedPreferences.getBoolean(getString(R.string.loginStatus), false);
+        checkFriendsListSize();
 
 
         return view;
     }
 
     void checkFriendsListSize() {
-        if (friends.size() <= 0) {
-            textView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
+        if (friends.size() > 0) {
             textView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+        } else {
+
+            textView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         }
     }
 

@@ -15,10 +15,9 @@ import com.example.varma.contacts.Extra.Utilis;
 import com.example.varma.contacts.FriendProfileActivity;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.R;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
-
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 
 public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerViewAdapterFriends.MyViewHolder> {
@@ -95,13 +94,8 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
             @Override
             public void onClick(View v) {
                 Intent toFriendProfileActivity = new Intent(context, FriendProfileActivity.class);
-                toFriendProfileActivity.putExtra("_ID", friends.get(position).get_ID());
-                toFriendProfileActivity.putExtra("_NAME", friends.get(position).get_NAME());
-                toFriendProfileActivity.putExtra("_EMAIL", friends.get(position).get_EMAIL());
-                toFriendProfileActivity.putExtra("_NUMBER", friends.get(position).get_NUMBER());
-                toFriendProfileActivity.putExtra("IMAGE_URL", friends.get(position).getIMAGE_URL());
-                toFriendProfileActivity.putExtra("NUMBER_OLD", friends.get(position).get_NUMBER_OLD());
-                toFriendProfileActivity.putExtra("FIRST_LETTER", friends.get(position).getFirstLetter());
+                toFriendProfileActivity.putExtra("FRIEND_ID", friends.get(position).get_ID());
+
                 context.startActivity(toFriendProfileActivity);
             }
         });
@@ -111,6 +105,13 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
     @Override
     public int getItemCount() {
         return friends.size();
+    }
+
+    public void updateFriendsList(ArrayList<Friend> friends) {
+        this.friends.clear();
+        this.friends.addAll(friends);
+        Log.i("onPause", "size : " + String.valueOf(friends.size()));
+        notifyDataSetChanged();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -131,13 +132,6 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
             friendProfileIcon = (CircularImageView) itemView.findViewById(R.id.profileIcon_friend_fragment2);
 
         }
-    }
-
-    public void updateFriendsList(ArrayList<Friend> friends) {
-        this.friends.clear();
-        this.friends.addAll(friends);
-        Log.i("onPause", "size : " + String.valueOf(friends.size()));
-        notifyDataSetChanged();
     }
 
 }

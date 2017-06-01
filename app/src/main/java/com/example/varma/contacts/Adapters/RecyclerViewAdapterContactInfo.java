@@ -3,6 +3,7 @@ package com.example.varma.contacts.Adapters;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.provider.CallLog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +16,15 @@ import com.example.varma.contacts.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by Varma on 4/6/2017.
- */
+
 
 public class RecyclerViewAdapterContactInfo extends RecyclerView.Adapter<RecyclerViewAdapterContactInfo.myViewHolder> {
 
-    ArrayList<CallLogInfo> callLogs;
-    Context context;
+    private ArrayList<CallLogInfo> callLogs = new ArrayList<>();
+    private Context context;
 
     public RecyclerViewAdapterContactInfo(ArrayList<CallLogInfo> callLogs) {
-        this.callLogs = callLogs;
+        this.callLogs.addAll(callLogs);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class RecyclerViewAdapterContactInfo extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(myViewHolder holder, int position) {
 
-        holder.numberView.setText(callLogs.get(position).getCallernumber());
+        holder.numberView.setText(callLogs.get(position).getOriginalNumber());
         holder.timeView.setText(callLogs.get(position).getCallTime());
         holder.durationView.setText(callLogs.get(position).getCallDuration());
 
@@ -72,20 +71,21 @@ public class RecyclerViewAdapterContactInfo extends RecyclerView.Adapter<Recycle
             case CallLog.Calls.OUTGOING_TYPE: {
 
                 imageView.setImageResource(R.drawable.ic_call_made);
-                drawable.setColor(context.getResources().getColor(R.color.lightBlueA400));
+                //drawable.setColor(context.getResources().getColor(R.color.lightBlueA400));
+                drawable.setColor(ContextCompat.getColor(context, R.color.lightBlueA400));
 
                 break;
             }
             case CallLog.Calls.INCOMING_TYPE: {
                 imageView.setImageResource(R.drawable.ic_call_received);
-                drawable.setColor(context.getResources().getColor(R.color.greenA400));
+                drawable.setColor(ContextCompat.getColor(context, R.color.greenA400));
                 break;
 
             }
             case CallLog.Calls.MISSED_TYPE: {
 
                 imageView.setImageResource(R.drawable.ic_call_missed);
-                drawable.setColor(context.getResources().getColor(R.color.orangeA400));
+                drawable.setColor(ContextCompat.getColor(context, R.color.orangeA400));
                 break;
             }
             default: {
@@ -99,7 +99,7 @@ public class RecyclerViewAdapterContactInfo extends RecyclerView.Adapter<Recycle
         TextView dateView, numberView, timeView, durationView;
         ImageView callIcon;
 
-        public myViewHolder(View itemView) {
+        myViewHolder(View itemView) {
             super(itemView);
 
             dateView = (TextView) itemView.findViewById(R.id.date_contactInfo_item);

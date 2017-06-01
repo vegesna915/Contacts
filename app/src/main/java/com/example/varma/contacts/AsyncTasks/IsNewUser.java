@@ -1,5 +1,6 @@
 package com.example.varma.contacts.AsyncTasks;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -7,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -53,6 +53,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
         progressBar.setVisibility(View.VISIBLE);
     }
 
+    @SuppressLint("ApplySharedPref")
     @Override
     protected JSONObject doInBackground(Void... voids) {
 
@@ -102,6 +103,16 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
             editor.putBoolean(activity.getString(R.string.loginStatus), false);
             editor.apply();
             Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show();
+            ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar_login);
+            progressBar.setVisibility(View.GONE);
+
+            ScrollView scrollView = (ScrollView) activity.findViewById(R.id.scrollView_login);
+            scrollView.setAlpha(1f);
+            scrollView.setClickable(true);
+
+            SignInButton googleSignIn = (SignInButton) activity.findViewById(R.id.googleSignIn_login);
+            googleSignIn.setAlpha(1f);
+            googleSignIn.setClickable(true);
             return;
         }
 
@@ -124,16 +135,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
                 Toast.makeText(context, "not working: \n", Toast.LENGTH_LONG).show();
                 break;
         }
-        ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar_login);
-        progressBar.setVisibility(View.GONE);
 
-        ScrollView scrollView = (ScrollView) activity.findViewById(R.id.scrollView_login);
-        scrollView.setAlpha(1f);
-        scrollView.setClickable(true);
-
-        SignInButton googleSignIn = (SignInButton) activity.findViewById(R.id.googleSignIn_login);
-        googleSignIn.setAlpha(1f);
-        googleSignIn.setClickable(true);
 
     }
 

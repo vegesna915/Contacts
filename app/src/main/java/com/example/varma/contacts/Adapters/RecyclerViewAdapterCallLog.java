@@ -1,23 +1,23 @@
 package com.example.varma.contacts.Adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.provider.CallLog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.ContactInfoActivity;
 import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.R;
 
 import java.util.ArrayList;
@@ -45,13 +45,13 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolderCallLog holder, final int position) {
+    public void onBindViewHolder(MyViewHolderCallLog holder, @SuppressLint("RecyclerView") final int position) {
 
         String callerName = callLogs.get(position).getCallerName();
 
         if (callerName == null) {
 
-            holder.callerNameView.setText(callLogs.get(position).getOriginalNumber());
+            holder.callerNameView.setText(callLogs.get(position).getCallernumber());
             holder.callerNumberView.setText("");
 
         } else {
@@ -142,20 +142,20 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
             case CallLog.Calls.OUTGOING_TYPE: {
 
                 imageView.setImageResource(R.drawable.ic_call_made);
-                drawable.setColor(context.getResources().getColor(R.color.lightBlueA400));
+                drawable.setColor(ContextCompat.getColor(context, R.color.lightBlueA400));
 
                 break;
             }
             case CallLog.Calls.INCOMING_TYPE: {
                 imageView.setImageResource(R.drawable.ic_call_received);
-                drawable.setColor(context.getResources().getColor(R.color.greenA400));
+                drawable.setColor(ContextCompat.getColor(context, R.color.greenA400));
                 break;
 
             }
             case CallLog.Calls.MISSED_TYPE: {
 
                 imageView.setImageResource(R.drawable.ic_call_missed);
-                drawable.setColor(context.getResources().getColor(R.color.orangeA400));
+                drawable.setColor(ContextCompat.getColor(context, R.color.orangeA400));
                 break;
             }
             default: {
@@ -199,7 +199,6 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         TextView callerNameView, callerNumberView, callDate, callTime, copyCalls;
         View view, horizontalDivider;
         ImageView callerIcon;
-        LinearLayout linearLayout;
         View callDetailsLayout, infoButton;
 
 
@@ -208,7 +207,6 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
             view = itemView;
             horizontalDivider = view.findViewById(R.id.divider_callLog);
-            linearLayout = (LinearLayout) view.findViewById(R.id.linearLayout_callLog_fragment1);
             callDate = (TextView) view.findViewById(R.id.date_callLog);
             callTime = (TextView) view.findViewById(R.id.time_callLog);
             callerNameView = (TextView) view.findViewById(R.id.callerName_callLog);

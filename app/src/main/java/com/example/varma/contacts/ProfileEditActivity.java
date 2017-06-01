@@ -1,10 +1,14 @@
 package com.example.varma.contacts;
 
+import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +16,8 @@ import android.widget.EditText;
 
 import com.example.varma.contacts.AsyncTasks.NewUserData;
 import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.service.SaveProfileEditDataJobService;
+import com.example.varma.contacts.service.UpdateProfileDataService;
 
 public class ProfileEditActivity extends AppCompatActivity {
 
@@ -50,6 +56,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         }
 
 
+
         saveButton = (Button) findViewById(R.id.saveButton_editProfile);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +68,7 @@ public class ProfileEditActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ApplySharedPref")
     void onClickSaveButton() {
 
         String name, number;
@@ -87,10 +95,23 @@ public class ProfileEditActivity extends AppCompatActivity {
         if (isNew) {
             NewUserData newUserData = new NewUserData(ProfileEditActivity.this);
             newUserData.execute((Void) null);
+        } else {
+            if (Utilis.internetConnectionStatus(this)) {
+                Intent startUpdateProfileDataService = new Intent(this, UpdateProfileDataService.class);
+                startService(startUpdateProfileDataService);
+            } else {
+                JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                JobInfo jobInfo = new JobInfo.Builder(10, new ComponentName(this, SaveProfileEditDataJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .build();
 
+                jobScheduler.schedule(jobInfo);
+
+            }
         }
+
         onBackPressed();
 
-
     }
+
 }

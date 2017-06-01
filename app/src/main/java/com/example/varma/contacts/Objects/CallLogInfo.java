@@ -1,6 +1,8 @@
 package com.example.varma.contacts.Objects;
 
 
+import android.annotation.SuppressLint;
+
 import com.example.varma.contacts.Extra.Utilis;
 
 import java.text.SimpleDateFormat;
@@ -27,6 +29,9 @@ public class CallLogInfo {
         this.originalNumber = callernumber;
         callernumber = callernumber.replaceAll(" ", "");
         callernumber = callernumber.replaceAll("\\+91", "");
+        if (callernumber.charAt(0) == '0') {
+            callernumber = callernumber.substring(1);
+        }
         this.callernumber = callernumber;
     }
 
@@ -86,6 +91,7 @@ public class CallLogInfo {
         return calldate;
     }
 
+    @SuppressLint("SimpleDateFormat")
     public void setCalldate(String calldate) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");

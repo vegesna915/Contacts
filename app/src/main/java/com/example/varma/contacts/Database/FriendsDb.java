@@ -5,7 +5,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.example.varma.contacts.Objects.Friend;
+
 import java.util.ArrayList;
 
 
@@ -47,7 +49,7 @@ public class FriendsDb {
     }
 
     // Getting single friend
-    public Friend getFriend(String email) {
+    public Friend getFriendByEmail(String email) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         Friend friend = null;
@@ -63,6 +65,44 @@ public class FriendsDb {
         String where = FRIENDS_EMAIL + "=?";
 
         String[] selectionArg = {email};
+
+        Cursor cursor = db.query(TABLE_FRIENDS, columns, where, selectionArg, null, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                friend = new Friend();
+                friend.set_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_ID)));
+                friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
+                friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
+                friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));
+                friend.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(FRIENDS_IMAGE_URL)));
+                friend.set_NUMBER_OLD(cursor.getString(cursor.getColumnIndex(FRIENDS_OLD_NUMBER)));
+                // return contact
+
+            }
+            cursor.close();
+        }
+
+
+        db.close();
+        return friend;
+    }
+
+    public Friend getFriendById(String _ID) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Friend friend = null;
+        String[] columns = {
+                FRIENDS_ID,
+                FRIENDS_NAME,
+                FRIENDS_NUMBER,
+                FRIENDS_EMAIL,
+                FRIENDS_IMAGE_URL,
+                FRIENDS_OLD_NUMBER
+        };
+
+        String where = FRIENDS_ID + "=?";
+
+        String[] selectionArg = {_ID};
 
         Cursor cursor = db.query(TABLE_FRIENDS, columns, where, selectionArg, null, null, null, null);
         if (cursor != null) {
@@ -143,9 +183,6 @@ public class FriendsDb {
         ContentValues values = new ContentValues();
         values.put(FRIENDS_NAME, friend.get_NAME()); // Friend Name
         values.put(FRIENDS_NUMBER, friend.get_NUMBER()); // Friend Phone Number
-        values.put(FRIENDS_EMAIL, friend.get_EMAIL()); // Friend Email
-        values.put(FRIENDS_IMAGE_URL, friend.getIMAGE_URL()); // Friend IMAGE
-        values.put(FRIENDS_OLD_NUMBER, friend.get_NUMBER_OLD()); // Friend OLD NUMBER
 
         // updating row
 

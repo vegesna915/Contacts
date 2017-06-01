@@ -4,11 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.CallLog;
-import android.provider.ContactsContract;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,10 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterCallLog;
-import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Extra.PermissionsClass;
 import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.R;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class HomeFragment_1 extends Fragment {
 
     public RecyclerViewAdapterCallLog adapter;
-    private ArrayList<CallLogInfo> callLogs;
+    private ArrayList<CallLogInfo> callLogs = new ArrayList<>();
     private boolean hasPermission;
     private RecyclerView recyclerView;
 
@@ -74,7 +74,7 @@ public class HomeFragment_1 extends Fragment {
     void getCallLog() {
 
         CallLogInfo callLog;
-        callLogs = new ArrayList<>();
+        callLogs.clear();
 
         ContentResolver contentResolver = getContext().getContentResolver();
 
@@ -93,15 +93,15 @@ public class HomeFragment_1 extends Fragment {
             };
 
 
-            String where = null;
+//            String where = null;
 
 
-            String[] selectionArgs = null;
+//            String[] selectionArgs = null;
 
 
             String sortingOrder = CallLog.Calls.DATE + " DESC ";
 
-            Cursor cursorCallLog = contentResolver.query(uri, columnsNumber, where, selectionArgs, sortingOrder);
+            Cursor cursorCallLog = contentResolver.query(uri, columnsNumber, null, null, sortingOrder);
 
 
             if (cursorCallLog != null) {
@@ -124,17 +124,17 @@ public class HomeFragment_1 extends Fragment {
 
 
                         String[] columnsNumbers = {
-                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                                ContactsContract.CommonDataKinds.Phone.NUMBER
                         };
 
 
-                        String whereNumber = ContactsContract.CommonDataKinds.Phone.IN_VISIBLE_GROUP + " ='1'" +
-                                " AND " +
-                                ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " = '1'" + " AND " +
-                                ContactsContract.CommonDataKinds.Phone.NUMBER + " = ?";
+                        String whereNumber =" REPLACE("+ContactsContract.CommonDataKinds.Phone.NUMBER+",' ','') IN (?, ?, ?)";
 
 
-                        String[] selectionArgsNumber = {callLog.getCallernumber()};
+                        String[] selectionArgsNumber = {callLog.getCallernumber(),
+                                "0"+callLog.getCallernumber(),
+                                "+91"+callLog.getCallernumber()};
 
 
                         String sortingOrderNumber = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
@@ -152,10 +152,11 @@ public class HomeFragment_1 extends Fragment {
                                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
 
                             }
+                            cursorContacts.close();
                         }
 
 
-                        cursorContacts.close();
+
                     }*/
 
                     callLogs.add(callLog);
@@ -166,9 +167,6 @@ public class HomeFragment_1 extends Fragment {
 
 
         } catch (SecurityException e) {
-            e.printStackTrace();
-
-        } catch (Exception e) {
 
             e.printStackTrace();
 

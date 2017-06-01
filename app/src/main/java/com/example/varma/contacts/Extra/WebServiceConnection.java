@@ -1,8 +1,5 @@
 package com.example.varma.contacts.Extra;
 
-import android.app.Activity;
-import android.widget.Toast;
-
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -11,9 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Varma on 4/17/2017.
- */
+
 
 public class WebServiceConnection {
 
@@ -32,11 +27,12 @@ public class WebServiceConnection {
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestMethod("POST");
 
+
             request = new OutputStreamWriter(connection.getOutputStream());
             request.write(parameters);
             request.flush();
             request.close();
-            String line = "";
+            String line;
             InputStreamReader isr = new InputStreamReader(connection.getInputStream());
             BufferedReader reader = new BufferedReader(isr);
             StringBuilder sb = new StringBuilder();
