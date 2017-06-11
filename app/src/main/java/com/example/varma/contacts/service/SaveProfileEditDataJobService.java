@@ -14,10 +14,12 @@ import org.json.JSONObject;
 
 public class SaveProfileEditDataJobService extends JobService {
 
+    SaveProfileEditDataAsync saveProfileEditDataAsync;
+
     @Override
     public boolean onStartJob(JobParameters params) {
 
-        SaveProfileEditDataAsync saveProfileEditDataAsync = new SaveProfileEditDataAsync(this, params);
+        saveProfileEditDataAsync = new SaveProfileEditDataAsync(this, params);
         saveProfileEditDataAsync.execute((Void) null);
 
 

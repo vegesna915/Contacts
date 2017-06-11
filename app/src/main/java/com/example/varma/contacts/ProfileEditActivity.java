@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.varma.contacts.AsyncTasks.NewUserData;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.service.SaveProfileEditDataJobService;
 import com.example.varma.contacts.service.UpdateProfileDataService;
 
@@ -26,6 +26,7 @@ public class ProfileEditActivity extends AppCompatActivity {
     Button saveButton;
     SharedPreferences sharedPref;
     boolean isLogin, isGoogleLogin;
+    String originalNameUser, originalNumberUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +49,18 @@ public class ProfileEditActivity extends AppCompatActivity {
         numberUser = (EditText) findViewById(R.id.numberUser_editProfile);
 
         if (isLogin) {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
 
-            nameUser.setText(sharedPref.getString(getString(R.string.userName), ""));
-            numberUser.setText(sharedPref.getString(getString(R.string.userNumber), ""));
+            originalNameUser = sharedPref.getString(getString(R.string.userName), "").trim();
+            originalNumberUser = sharedPref.getString(getString(R.string.userNumber), "").trim();
+            nameUser.setText(originalNameUser);
+            numberUser.setText(originalNumberUser);
 
-
+        } else {
+            originalNameUser = "";
+            originalNumberUser = "";
         }
 
 
@@ -62,7 +70,7 @@ public class ProfileEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Utilis.closeKeyboard(ProfileEditActivity.this, view);
+                Utils.closeKeyboard(ProfileEditActivity.this, view);
                 onClickSaveButton();
             }
         });
@@ -84,33 +92,46 @@ public class ProfileEditActivity extends AppCompatActivity {
             numberUser.setError("Enter your number");
             return;
         }
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-
-        editor.putString(getString(R.string.userName), name);
-        editor.putString(getString(R.string.userNumber), number);
-
-        editor.commit();
-
-        if (isNew) {
-            NewUserData newUserData = new NewUserData(ProfileEditActivity.this);
-            newUserData.execute((Void) null);
-        } else {
-            if (Utilis.internetConnectionStatus(this)) {
-                Intent startUpdateProfileDataService = new Intent(this, UpdateProfileDataService.class);
-                startService(startUpdateProfileDataService);
-            } else {
-                JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                JobInfo jobInfo = new JobInfo.Builder(10, new ComponentName(this, SaveProfileEditDataJobService.class))
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                        .build();
-
-                jobScheduler.schedule(jobInfo);
-
-            }
+        if (name.length() < 3) {
+            nameUser.setError("Minimum length 3");
+            return;
         }
 
-        onBackPressed();
+        if (!Utils.isUserNameValid(name)) {
+            nameUser.setError("No Special Characters Allowed");
+            return;
+        }
+
+        if (name.equals(originalNameUser) && number.equals(originalNumberUser)) {
+            onBackPressed();
+        } else {
+            SharedPreferences.Editor editor = sharedPref.edit();
+
+            editor.putString(getString(R.string.userName), name);
+            editor.putString(getString(R.string.userNumber), number);
+
+            editor.commit();
+
+            if (isNew) {
+                NewUserData newUserData = new NewUserData(ProfileEditActivity.this);
+                newUserData.execute((Void) null);
+            } else {
+                if (Utils.internetConnectionStatus(this)) {
+                    Intent startUpdateProfileDataService = new Intent(this, UpdateProfileDataService.class);
+                    startService(startUpdateProfileDataService);
+                } else {
+                    JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                    JobInfo jobInfo = new JobInfo.Builder(10, new ComponentName(this, SaveProfileEditDataJobService.class))
+                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                            .build();
+
+                    jobScheduler.schedule(jobInfo);
+
+                }
+            }
+
+            onBackPressed();
+        }
 
     }
 

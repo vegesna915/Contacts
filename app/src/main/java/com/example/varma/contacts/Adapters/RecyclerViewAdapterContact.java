@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.ContactInfoActivity;
+import com.example.varma.contacts.Extra.Utils;
+import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.R;
-import com.example.varma.contacts.Extra.Utilis;
 
 import java.util.ArrayList;
 
@@ -68,7 +68,7 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
 
 
         if (contacts.get(position).getContactColor() == 0) {
-            color = Utilis.getContactColor(context, color);
+            color = Utils.getContactColor(context, color);
             contacts.get(position).setContactColor(color);
         } else {
             color = contacts.get(position).getContactColor();
@@ -127,6 +127,13 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
 
     }
 
+    public void refreshContacts(ArrayList<Contact> contacts) {
+        this.contacts.clear();
+        this.contacts.addAll(contacts);
+        this.copyContacts.addAll(contacts);
+        notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView contactNameView, contactNumberView, contactProfileIconView, textDivider;
@@ -143,13 +150,6 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
             viewContact = itemView.findViewById(R.id.contact);
 
         }
-    }
-
-
-    public void refreshContacts(ArrayList<Contact> contacts) {
-        this.contacts.clear();
-        this.contacts.addAll(contacts);
-        notifyDataSetChanged();
     }
 
 }

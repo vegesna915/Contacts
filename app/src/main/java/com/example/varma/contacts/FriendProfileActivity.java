@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterContactInfo;
 import com.example.varma.contacts.Database.FriendsDb;
 import com.example.varma.contacts.Extra.PermissionsClass;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Objects.Friend;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -89,7 +89,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         nameView.setText(friend.get_NAME());
         numberHomeView.setText(friend.get_NUMBER());
         emailHomeView.setText(friend.get_EMAIL());
-        if (!friend.getIMAGE_URL().equals("") && Utilis.internetConnectionStatus(this)) {
+        if (!friend.getIMAGE_URL().equals("") && Utils.internetConnectionStatus(this)) {
             Glide.with(this).load(friend.getIMAGE_URL()).dontAnimate().into(circularImageView);
         }
     }

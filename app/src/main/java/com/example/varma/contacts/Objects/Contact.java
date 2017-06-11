@@ -1,7 +1,7 @@
 package com.example.varma.contacts.Objects;
 
 
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 
 public class Contact {
     private String contactName, contactNumber, contactId, contactFirstLetter;
@@ -16,7 +16,7 @@ public class Contact {
 
     public void setContactName(String contactName) {
         this.contactName = contactName;
-        contactFirstLetter = Utilis.getFirstLetter(contactName);
+        contactFirstLetter = Utils.getFirstLetter(contactName);
 
     }
 

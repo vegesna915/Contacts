@@ -1,14 +1,15 @@
 package com.example.varma.contacts;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -20,7 +21,7 @@ import android.widget.Toast;
 
 import com.example.varma.contacts.AsyncTasks.IsNewUser;
 import com.example.varma.contacts.AsyncTasks.LogingIn;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,7 +32,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,20 +62,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         passwordView = (EditText) findViewById(R.id.password_login);
 
-        Button loginbutton = (Button) findViewById(R.id.loginButton_login);
-        loginbutton.setOnClickListener(new View.OnClickListener() {
+        Button loginButton = (Button) findViewById(R.id.loginButton_login);
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                Utilis.closeKeyboard(context, v);
+                Utils.closeKeyboard(context, v);
                 attemptLogin();
 
             }
         });
 
-        Button forgotbutton = (Button) findViewById(R.id.forgotPassword_login);
-        forgotbutton.setOnClickListener(new View.OnClickListener() {
+        Button forgotButton = (Button) findViewById(R.id.forgotPassword_login);
+        forgotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Snackbar.make(v, "Sorry about that, we can do nothing about that", Snackbar.LENGTH_LONG)
@@ -83,8 +83,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        Button newuserbutton = (Button) findViewById(R.id.register_login);
-        newuserbutton.setOnClickListener(new View.OnClickListener() {
+        Button newUserButton = (Button) findViewById(R.id.register_login);
+        newUserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent toRegisterActivity = new Intent(context, RegisterActivity.class);
@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View v) {
                 progressBar(true);
 
-                if (Utilis.internetConnectionStatus(LoginActivity.this)) {
+                if (Utils.internetConnectionStatus(LoginActivity.this)) {
                     CheckConnection checkConnection = new CheckConnection();
                     checkConnection.execute((Void) null);
                 } else {
@@ -144,7 +144,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             userIdView.setError("Enter Email Address");
             userIdView.requestFocus();
             return;
-        } else if (!Utilis.isEmailValid(userId)) {
+        } else if (!Utils.isEmailValid(userId)) {
             userIdView.setError("Enter Valid Email Address");
             userIdView.requestFocus();
             return;
@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             passwordView.requestFocus();
             return;
 
-        } else if (!Utilis.isPasswordValid(password)) {
+        } else if (!Utils.isPasswordValid(password)) {
             passwordView.setError("Enter Valid Password");
             passwordView.requestFocus();
             return;
@@ -173,6 +173,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Toast.makeText(context, " Connection Failed ", Toast.LENGTH_SHORT).show();
     }
 
+    @SuppressLint("ApplySharedPref")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

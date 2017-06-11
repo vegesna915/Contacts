@@ -35,7 +35,7 @@
             android:noHistory="true"
             android:parentActivityName=".LoginActivity" />
         <activity
-            android:name=".UserProfileActivty"
+            android:name=".UserProfileActivity"
             android:label="User Profile"
             android:parentActivityName=".HomeActivity" />
         <activity
@@ -44,7 +44,7 @@
         <activity android:name=".TestActivty" />
         <activity
             android:name=".ProfileEditActivity"
-            android:parentActivityName=".UserProfileActivty" />
+            android:parentActivityName=".UserProfileActivity" />
         <activity
             android:name=".DialerPadActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />

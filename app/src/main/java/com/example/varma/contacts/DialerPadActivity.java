@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterDialPad;
 import com.example.varma.contacts.Extra.PermissionsClass;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.DialerInfo;
 
 import java.util.ArrayList;
@@ -156,7 +156,7 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
                 int startPosition = editText.getSelectionStart();
                 int endPosition = editText.getSelectionEnd();
 
-                editText.setText(Utilis.removeCharFromString(editText.getText().toString(), "",
+                editText.setText(Utils.removeCharFromString(editText.getText().toString(), "",
                         startPosition, endPosition));
                 if (startPosition != 0) {
                     editText.setSelection(startPosition - 1);
@@ -244,7 +244,7 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
 
         }
 
-        editText.setText(Utilis.addCharToString(dialPadInput, newEntry, startPosition, endPosition));
+        editText.setText(Utils.addCharToString(dialPadInput, newEntry, startPosition, endPosition));
         editText.setSelection(startPosition + 1);
         updateInfo();
         cursorVisible();

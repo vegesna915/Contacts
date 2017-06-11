@@ -6,6 +6,16 @@
     android:orientation="vertical"
     tools:context=".HomeActivity">
 
+    <TextView
+        android:id="@+id/textView_fragment1_noPermission"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Permission not Granted to get CallLog"
+        android:textSize="16sp"
+        android:visibility="gone"
+        tools:ignore="HardcodedText" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_callLog_home"
         android:layout_width="match_parent"

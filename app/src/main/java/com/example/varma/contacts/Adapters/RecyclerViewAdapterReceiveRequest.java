@@ -14,18 +14,17 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Database.FriendsDb;
 import com.example.varma.contacts.Database.RequestsDb;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.Objects.Request;
 import com.example.varma.contacts.R;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 
 public class RecyclerViewAdapterReceiveRequest extends RecyclerView.Adapter<RecyclerViewAdapterReceiveRequest.MyViewHolder> {
@@ -64,7 +63,7 @@ public class RecyclerViewAdapterReceiveRequest extends RecyclerView.Adapter<Recy
             @Override
             public void onClick(View view) {
 
-                if (!Utilis.internetConnectionStatus(context)) {
+                if (!Utils.internetConnectionStatus(context)) {
                     Toast.makeText(context, "Check Network Connection", Toast.LENGTH_SHORT).show();
                     return;
                 }

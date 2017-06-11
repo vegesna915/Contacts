@@ -94,6 +94,14 @@ public class RecyclerViewAdapterContactInfo extends RecyclerView.Adapter<Recycle
         }
     }
 
+    public void updateCallLog(ArrayList<CallLogInfo> callLogs) {
+
+        this.callLogs.clear();
+        this.callLogs.addAll(callLogs);
+        notifyDataSetChanged();
+
+    }
+
     class myViewHolder extends RecyclerView.ViewHolder {
 
         TextView dateView, numberView, timeView, durationView;

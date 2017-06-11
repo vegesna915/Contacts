@@ -3,7 +3,7 @@ package com.example.varma.contacts.Objects;
 
 import android.annotation.SuppressLint;
 
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +18,11 @@ public class CallLogInfo {
     }
 
     public void setCallerName(String callerName) {
-        this.callerName = callerName;
+        if (callerName == null) {
+            this.callerName = "";
+        } else {
+            this.callerName = callerName;
+        }
     }
 
     public String getCallernumber() {
@@ -97,7 +101,7 @@ public class CallLogInfo {
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
         callTime = sdf.format(new Date(Long.parseLong(calldate)));
 
-        this.calldate = Utilis.getDateCallLog(calldate);
+        this.calldate = Utils.getDateCallLog(calldate);
 
     }
 

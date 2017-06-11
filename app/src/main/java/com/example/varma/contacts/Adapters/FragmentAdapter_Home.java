@@ -38,14 +38,25 @@ public class FragmentAdapter_Home extends FragmentStatePagerAdapter {
     }
 
     public void changeFragments(List<Fragment> fragments) {
-        this.fragments.clear();
-        this.fragments.addAll(fragments);
+        this.fragments = fragments;
         notifyDataSetChanged();
     }
 
     public void changeFragment3(Fragment fragment3) {
         fragments.remove(2);
         fragments.add(2, fragment3);
+        notifyDataSetChanged();
+    }
+
+    public void changeFragment2(Fragment fragment2) {
+        fragments.remove(1);
+        fragments.add(1, fragment2);
+        notifyDataSetChanged();
+    }
+
+    public void changeFragment1(Fragment fragment1) {
+        fragments.remove(0);
+        fragments.add(0, fragment1);
         notifyDataSetChanged();
     }
 }

@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,14 +30,16 @@ import java.util.ArrayList;
 public class ContactInfoActivity extends AppCompatActivity {
 
     Contact contact;
-    ArrayList<CallLogInfo> callLogs;
-
+    RecyclerViewAdapterContactInfo adapter;
+    ArrayList<CallLogInfo> callLogs = new ArrayList<>();
+    boolean isFirstResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_info);
 
+        isFirstResume = true;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_contactInfo);
         setSupportActionBar(toolbar);
 
@@ -66,7 +68,7 @@ public class ContactInfoActivity extends AppCompatActivity {
 
         getCallLogs();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView_ContactInfo);
-        RecyclerViewAdapterContactInfo adapter = new RecyclerViewAdapterContactInfo(callLogs);
+        adapter = new RecyclerViewAdapterContactInfo(callLogs);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
@@ -100,6 +102,7 @@ public class ContactInfoActivity extends AppCompatActivity {
 
         //----------------------------------------------------------
         FloatingActionButton fabEdit = (FloatingActionButton) findViewById(R.id.fab_edit_contact_info);
+        fabEdit.setVisibility(View.GONE);
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +120,7 @@ public class ContactInfoActivity extends AppCompatActivity {
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if (requestCode == 501) {
+        if (requestCode == 601) {
             if (grantResults.length > 0) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -140,7 +143,12 @@ public class ContactInfoActivity extends AppCompatActivity {
     }
 
     void getCallLogs() {
-        callLogs = new ArrayList<>();
+
+
+        callLogs.clear();
+        if (!PermissionsClass.hasPermissionReadCallLog(this)) {
+            return;
+        }
         CallLogInfo callLog;
 
         ContentResolver contentResolver = getContentResolver();
@@ -197,5 +205,18 @@ public class ContactInfoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!isFirstResume) {
+            getCallLogs();
+            adapter.updateCallLog(callLogs);
+        }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isFirstResume = false;
+    }
 }

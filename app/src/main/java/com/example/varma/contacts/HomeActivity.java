@@ -1,35 +1,38 @@
 package com.example.varma.contacts;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Adapters.FragmentAdapter_Home;
 import com.example.varma.contacts.Extra.NavigationViewHandler;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Fragments.HomeFragment_1;
 import com.example.varma.contacts.Fragments.HomeFragment_2;
 import com.example.varma.contacts.Fragments.HomeFragment_3;
@@ -40,27 +43,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
 public class HomeActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     FloatingActionButton fab;
     SharedPreferences sharedPref;
-    boolean isLogin;
     List<Fragment> fragments;
     HomeFragment_1 homeFragment1;
     HomeFragment_2 homeFragment2;
     HomeFragment_3 homeFragment3;
+    HomeFragment_3_notLogedIn homeFragment_3_notLogedIn;
     MenuItem menuItem;
     SearchView searchView;
     int page;
-    boolean isFirstResume;
+    boolean isFirstResume, isLogin, readCallLog, readContacts;
     FragmentAdapter_Home fragmentAdapter;
     List<String> tabTitles;
     NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         page = getIntent().getIntExtra(getString(R.string.putExtraPage_HomeActivity), 1);
         sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
         isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
+        readCallLog = PermissionsClass.hasPermissionReadCallLog(this);
+        readContacts = PermissionsClass.hasPermissionReadContacts(this);
 
         declareViews();
 
@@ -84,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         tabLayout();
 
         viewPager();
-        setViewPagerListener();
+
 
         setFabClickListener();
 
@@ -100,6 +104,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         homeFragment1 = new HomeFragment_1();
         homeFragment2 = new HomeFragment_2();
         homeFragment3 = new HomeFragment_3();
+        homeFragment_3_notLogedIn = new HomeFragment_3_notLogedIn();
         fragments = new ArrayList<>();
         navigationView = (NavigationView) findViewById(R.id.navViewHome);
 
@@ -132,24 +137,22 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     void viewPager() {
-
         fragments.add(homeFragment1);
         fragments.add(homeFragment2);
 
         if (isLogin) {
-            //fragments.add(new HomeFragment_3());
             fragments.add(homeFragment3);
         } else {
-            fragments.add(new HomeFragment_3_notLogedIn());
+            fragments.add(homeFragment_3_notLogedIn);
         }
 
 
         viewPager.setOffscreenPageLimit(2);
-        fragmentAdapter = new FragmentAdapter_Home(getSupportFragmentManager(), tabTitles, fragments);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentAdapter = new FragmentAdapter_Home(fragmentManager, tabTitles, fragments);
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(page);
-
 
     }
 
@@ -164,11 +167,9 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onPageSelected(int position) {
 
                 if (!searchView.isIconified()) {
-
                     homeFragment2.adapter.filterContacts("");
                     searchView.setIconified(true);
                 }
-
 
                 switch (position) {
                     case 0: {
@@ -239,6 +240,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         });
     }
 
+    @SuppressLint("SetTextI18n")
     void navigationView() {
 
 
@@ -255,7 +257,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         navHeaderProfilePic.setImageResource(R.drawable.ic_account_circle);
         if (isLogin) {
             navHeaderTextView.setText("Click here to see User Profile");
-            if (sharedPref.getBoolean(getString(R.string.loginIsGoogle), false) && Utilis.internetConnectionStatus(this)) {
+            if (sharedPref.getBoolean(getString(R.string.loginIsGoogle), false) && Utils.internetConnectionStatus(this)) {
 
                 String imgUrl = sharedPref.getString(getString(R.string.userImageUrl), "");
 
@@ -278,8 +280,9 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onClick(View v) {
 
                 if (isLogin) {
-                    Intent toUserProfile = new Intent(HomeActivity.this, UserProfileActivty.class);
+                    Intent toUserProfile = new Intent(HomeActivity.this, UserProfileActivity.class);
                     startActivity(toUserProfile);
+
                 } else {
                     Intent toLoginActivity = new Intent(HomeActivity.this, LoginActivity.class);
                     toLoginActivity.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -317,7 +320,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setOnQueryTextListener(this);
 
-
+        setViewPagerListener();
         return true;
     }
 
@@ -373,31 +376,17 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if (!isFirstResume) {
 
-            homeFragment2.refreshContacts();
-            homeFragment1.notifyCallLogChanged();
             if (isLogin != sharedPref.getBoolean(getString(R.string.loginStatus), false)) {
-
                 isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
-                /*fragments.clear();
-                viewPager();
-                navigationView();*/
 
                 if (isLogin) {
-                    //fragments.add(new HomeFragment_3());
-                    homeFragment3 = new HomeFragment_3();
-                    fragmentAdapter.changeFragment3(homeFragment3);
+                    fragments.remove(2);
+                    fragments.add(2, homeFragment3);
                 } else {
                     fragmentAdapter.changeFragment3(new HomeFragment_3_notLogedIn());
                 }
+                navigationView();
             }
-
-            if (isLogin) {
-                Log.i("onPause", "1");
-                homeFragment3.refreshFriends();
-            }
-
-
-
 
         }
     }
@@ -416,11 +405,9 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         switch (requestCode) {
             case 701: {
                 if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-
-                    } else {
+                    if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this, "Grant Permission to Call", Toast.LENGTH_SHORT).show();
+
                     }
                 }
                 break;
@@ -437,4 +424,6 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
     }
+
+
 }

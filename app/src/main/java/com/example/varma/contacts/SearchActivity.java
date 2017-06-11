@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
@@ -16,13 +16,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.AsyncTasks.SendRequest;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Extra.WebServiceConnection;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class SearchActivity extends AppCompatActivity {
     String email;
@@ -67,7 +66,7 @@ public class SearchActivity extends AppCompatActivity {
         cardViewSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utilis.closeKeyboard(activity, view);
+                Utils.closeKeyboard(activity, view);
             }
         });
 
@@ -79,7 +78,7 @@ public class SearchActivity extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utilis.closeKeyboard(activity, view);
+                Utils.closeKeyboard(activity, view);
 
                 String enteredEmail = emailFriendView.getText().toString();
 
@@ -93,8 +92,8 @@ public class SearchActivity extends AppCompatActivity {
                 }
 
 
-                if (Utilis.isEmailValid(enteredEmail)) {
-                    if (Utilis.internetConnectionStatus(SearchActivity.this)) {
+                if (Utils.isEmailValid(enteredEmail)) {
+                    if (Utils.internetConnectionStatus(SearchActivity.this)) {
                         CheckConnection checkConnection = new CheckConnection();
                         checkConnection.execute(enteredEmail);
 

@@ -1,7 +1,7 @@
 package com.example.varma.contacts.Objects;
 
 
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 
 public class Friend {
 
@@ -26,7 +26,7 @@ public class Friend {
 
     public void set_NAME(String _NAME) {
         this._NAME = _NAME;
-        this.firstLetter = Utilis.getFirstLetter(_NAME);
+        this.firstLetter = Utils.getFirstLetter(_NAME);
     }
 
     public String get_NUMBER() {

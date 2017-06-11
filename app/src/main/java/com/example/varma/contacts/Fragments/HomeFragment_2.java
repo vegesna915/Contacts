@@ -4,12 +4,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,56 +20,66 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterContact;
-import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.R;
 
 import java.util.ArrayList;
-
 
 
 public class HomeFragment_2 extends Fragment {
 
 
     public RecyclerView recyclerView;
+
     public RecyclerViewAdapterContact adapter;
-    Context context;
+    private Context context;
     private ArrayList<Contact> contacts = new ArrayList<>();
-    private boolean hasPermission;
+    private TextView noPermissionTextView;
+    private boolean isFirstResume;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-
         context = inflater.getContext();
-        hasPermission = PermissionsClass.hasPermissionReadContacts(getContext());
-        LinearLayout linearLayout;
-        if (!hasPermission) {
+        isFirstResume = true;
+        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_home_2, container, false);
 
-            linearLayout = (LinearLayout) inflater.inflate(R.layout.no_permission, container, false);
-            TextView textView = (TextView) linearLayout.findViewById(R.id.textView_noPermission);
-            textView.setText("Permission not Granted to get Contacts");
+        recyclerView = (RecyclerView) linearLayout.findViewById(R.id.recyclerView_contacts_home);
+        noPermissionTextView = (TextView) linearLayout.findViewById(R.id.textView_fragment2_noPermission);
 
-        } else {
 
-            linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_home_2, container, false);
+        getContacts();
+        return linearLayout;
+    }
 
-            recyclerView = (RecyclerView) linearLayout.findViewById(R.id.recyclerView_contacts_home);
-
+    private void checkPermission() {
+        if (recyclerView == null || noPermissionTextView == null) {
+            Log.i("lifecycle", "checkPermission Contacts recyclerView == null");
+            return;
         }
 
-        return linearLayout;
+        boolean hasPermission = PermissionsClass.hasPermissionReadContacts(getContext());
+        Log.i("lifecycle", "checkPermission Contacts");
+        if (hasPermission) {
+            Log.i("lifecycle", "checkPermission Contacts has Permission");
+            recyclerView.setVisibility(View.VISIBLE);
+            noPermissionTextView.setVisibility(View.GONE);
+        } else {
+            Log.i("lifecycle", "checkPermission Contacts no Permission");
+            recyclerView.setVisibility(View.GONE);
+            noPermissionTextView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!hasPermission) {
-            return;
-        }
 
-        getContacts();
+
+        //getContacts();
         adapter = new RecyclerViewAdapterContact(contacts);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -83,75 +94,90 @@ public class HomeFragment_2 extends Fragment {
             }
         });
 
+
     }
 
     private void getContacts() {
 
-        Contact contact;
-
-        //getting ContactNames
-
-        ContentResolver contentResolver = getContext().getContentResolver();
-
-        try {
+        contacts.clear();
 
 
-            Uri uriNumber = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        if (PermissionsClass.hasPermissionReadContacts(context)) {
+            Contact contact;
+
+            //getting ContactNames
+
+            ContentResolver contentResolver = getContext().getContentResolver();
+
+            try {
 
 
-            String[] columnsNumber = {
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER,
-            };
+                Uri uriNumber = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
 
 
-            String whereNumber = ContactsContract.CommonDataKinds.Phone.IN_VISIBLE_GROUP + " ='1'" +
-                    " AND " +
-                    ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " = '1'";
+                String[] columnsNumber = {
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                        ContactsContract.CommonDataKinds.Phone.NUMBER,
+                };
 
 
-            String[] selectionArgsNumber = null;
+                String whereNumber = ContactsContract.CommonDataKinds.Phone.IN_VISIBLE_GROUP + " ='1'" +
+                        " AND " +
+                        ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " = '1'";
 
 
-            String sortingOrderNumber = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
+                //String[] selectionArgsNumber = null;
 
 
-            Cursor cursorContacts = contentResolver.query(uriNumber, columnsNumber, whereNumber,
-                    selectionArgsNumber, sortingOrderNumber);
+                String sortingOrderNumber = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
 
-            String temp = "";
 
-            while (cursorContacts.moveToNext()) {
-                contact = new Contact();
+                Cursor cursorContacts = contentResolver.query(uriNumber, columnsNumber, whereNumber,
+                        null, sortingOrderNumber);
 
-                contact.setContactId(cursorContacts.getString(
-                        cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
-                contact.setContactName(
-                        cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                contact.setContactNumber(
-                        cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                if (cursorContacts != null) {
+                    while (cursorContacts.moveToNext()) {
+                        contact = new Contact();
 
-                contacts.add(contact);
+                        contact.setContactId(cursorContacts.getString(
+                                cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)));
+                        contact.setContactName(
+                                cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                        contact.setContactNumber(
+                                cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
+                        contacts.add(contact);
+
+                    }
+                    cursorContacts.close();
+                }
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
 
             }
-
-
-            cursorContacts.close();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
         }
-
-
     }
 
-    public void refreshContacts() {
-        contacts.clear();
-        getContacts();
-        adapter.refreshContacts(contacts);
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isFirstResume) {
+            getContacts();
+            adapter.refreshContacts(contacts);
+        }
+        checkPermission();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isFirstResume = false;
+    }
+
+
 }

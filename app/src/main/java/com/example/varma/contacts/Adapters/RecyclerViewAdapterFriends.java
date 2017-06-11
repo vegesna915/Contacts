@@ -4,14 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.FriendProfileActivity;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.R;
@@ -47,9 +46,8 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
         String firstLetter = friends.get(position).getFirstLetter();
 
-        Log.i("friendimage", friends.get(position).getIMAGE_URL());
 
-        if (friends.get(position).getIMAGE_URL().equals("") && Utilis.internetConnectionStatus(context)) {
+        if (friends.get(position).getIMAGE_URL().equals("") && Utils.internetConnectionStatus(context)) {
             holder.contactProfileIconView.setText(firstLetter);
             holder.contactProfileIconView.setVisibility(View.VISIBLE);
             holder.friendProfileIcon.setVisibility(View.GONE);
@@ -85,7 +83,7 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
         GradientDrawable drawable = (GradientDrawable) holder.contactProfileIconView.getBackground();
 
 
-        color = Utilis.getContactColor(context, color);
+        color = Utils.getContactColor(context, color);
 
 
         drawable.setColor(color);
@@ -110,7 +108,6 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
     public void updateFriendsList(ArrayList<Friend> friends) {
         this.friends.clear();
         this.friends.addAll(friends);
-        Log.i("onPause", "size : " + String.valueOf(friends.size()));
         notifyDataSetChanged();
     }
 

@@ -1,8 +1,10 @@
 package com.example.varma.contacts;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -10,19 +12,19 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Extra.NavigationViewHandler;
-import com.example.varma.contacts.Extra.Utilis;
+import com.example.varma.contacts.Extra.Utils;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-public class UserProfileActivty extends AppCompatActivity {
+public class UserProfileActivity extends AppCompatActivity {
 
 
     SharedPreferences sharedPref;
@@ -49,7 +51,7 @@ public class UserProfileActivty extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toEditProfile = new Intent(UserProfileActivty.this, ProfileEditActivity.class);
+                Intent toEditProfile = new Intent(UserProfileActivity.this, ProfileEditActivity.class);
                 startActivity(toEditProfile);
             }
         });
@@ -88,6 +90,7 @@ public class UserProfileActivty extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     void navigationView() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view_userProfile);
         navigationView.setNavigationItemSelectedListener(
@@ -104,7 +107,7 @@ public class UserProfileActivty extends AppCompatActivity {
         navHeaderProfilePic.setImageResource(R.drawable.ic_account_circle);
         if (isLogin) {
             navHeaderTextView.setText("Click here to see Profile");
-            if (isGoogleLogin && Utilis.internetConnectionStatus(this)) {
+            if (isGoogleLogin && Utils.internetConnectionStatus(this)) {
 
                 String imgUrl = sharedPref.getString(getString(R.string.userImageUrl), "");
 
@@ -127,7 +130,7 @@ public class UserProfileActivty extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (!isLogin) {
-                    Intent toLoginActivity = new Intent(UserProfileActivty.this, LoginActivity.class);
+                    Intent toLoginActivity = new Intent(UserProfileActivity.this, LoginActivity.class);
                     startActivity(toLoginActivity);
                 }
 

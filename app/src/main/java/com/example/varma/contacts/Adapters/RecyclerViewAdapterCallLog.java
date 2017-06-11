@@ -49,7 +49,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
         String callerName = callLogs.get(position).getCallerName();
 
-        if (callerName == null) {
+        if (callerName == null || callerName.equals("")) {
 
             holder.callerNameView.setText(callLogs.get(position).getCallernumber());
             holder.callerNumberView.setText("");
@@ -164,7 +164,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    public void filterCallLog(String query) {
+    /*public void filterCallLog(String query) {
         callLogs.clear();
 
         if (query.isEmpty()) {
@@ -187,10 +187,11 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
             }
         }
         notifyDataSetChanged();
-    }
+    }*/
 
     public void updateCallLog(ArrayList<CallLogInfo> callLogs) {
-        this.callLogs = callLogs;
+        this.callLogs.clear();
+        this.callLogs.addAll(callLogs);
         notifyDataSetChanged();
     }
 

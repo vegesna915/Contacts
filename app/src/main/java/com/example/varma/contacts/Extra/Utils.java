@@ -18,7 +18,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 
-public class Utilis {
+public class Utils {
 
 
     public static boolean isEmailValid(String email) {
@@ -43,6 +43,10 @@ public class Utilis {
             return " ";
         }
 
+    }
+
+    public static boolean isUserNameValid(String name) {
+        return Pattern.matches("^[a-zA-Z](?:[_ -]?[a-zA-Z0-9])*$", name);
     }
 
     public static boolean internetConnectionStatus(Context context) {

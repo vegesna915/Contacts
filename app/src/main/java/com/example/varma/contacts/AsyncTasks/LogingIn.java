@@ -14,8 +14,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.example.varma.contacts.R;
-import com.example.varma.contacts.UserProfileActivty;
-import com.example.varma.contacts.service.SyncDataService;
+import com.example.varma.contacts.UserProfileActivity;
 import com.google.android.gms.common.SignInButton;
 
 
@@ -108,11 +107,11 @@ public class LogingIn extends AsyncTask<Void, Void, Boolean> {
     }
 
     private void callUserProfileActivity() {
-        Intent toUserProfile = new Intent(activity, UserProfileActivty.class);
+        Intent toUserProfile = new Intent(activity, UserProfileActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
 
         // Adds the back stack
-        stackBuilder.addParentStack(UserProfileActivty.class);
+        stackBuilder.addParentStack(UserProfileActivity.class);
         // Adds the Intent to the top of the stack
         stackBuilder.addNextIntent(toUserProfile);
         // Gets a PendingIntent containing the entire back stack
