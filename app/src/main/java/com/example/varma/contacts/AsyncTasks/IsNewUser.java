@@ -25,7 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
+public class IsNewUser extends AsyncTask<Void, Void, String> {
 
     private Context context;
     private Activity activity;
@@ -55,7 +55,7 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
 
     @SuppressLint("ApplySharedPref")
     @Override
-    protected JSONObject doInBackground(Void... voids) {
+    protected String doInBackground(Void... voids) {
 
         SharedPreferences sharedPref = activity.getSharedPreferences(
                 activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
@@ -73,6 +73,12 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
 
         JSONObject json = WebServiceConnection.getData(urlString, parameters);
 
+        if (json == null) {
+            return "2";
+        }
+
+        String isNew = "0";
+
         try {
             SharedPreferences sharedPreferences = context.getSharedPreferences(
                     context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
@@ -81,7 +87,9 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
             editor.putString(context.getString(R.string.userName), json.getString("_NAME"));
             editor.putString(context.getString(R.string.userNumber), json.getString("_NUMBER"));
             editor.putString(context.getString(R.string.userDatabaseId), json.getString("_ID"));
+            editor.putString(context.getString(R.string.userId), json.getString("USER_ID"));
             editor.commit();
+            isNew = json.getString("IS_NEW");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -89,13 +97,13 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
 
         //getToken();
 
-        return json;
+        return isNew;
     }
 
     @Override
-    protected void onPostExecute(JSONObject json) {
+    protected void onPostExecute(String isNew) {
 
-        if (json == null) {
+        if (isNew.equals("2")) {
             SharedPreferences sharedPreferences = activity.getSharedPreferences(
                     activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
 
@@ -117,12 +125,6 @@ public class IsNewUser extends AsyncTask<Void, Void, JSONObject> {
         }
 
 
-        String isNew = "0";
-        try {
-            isNew = json.getString("IS_NEW");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         switch (isNew) {
             case "1":

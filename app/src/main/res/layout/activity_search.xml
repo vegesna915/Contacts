@@ -63,7 +63,7 @@
                     android:id="@+id/emailFriend_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Friend Email Address"
+                    android:hint="Enter Friend's Email/User Id"
                     android:inputType="textEmailAddress"
                     android:textSize="20sp" />
             </android.support.design.widget.TextInputLayout>

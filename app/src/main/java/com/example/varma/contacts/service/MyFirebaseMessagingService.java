@@ -7,7 +7,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.example.varma.contacts.Database.FriendsDb;
 import com.example.varma.contacts.Database.RequestsDb;
@@ -35,7 +34,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Log.i("fcmessage", "1");
 
         if (remoteMessage.getData().size() <= 0) {
             return;
@@ -122,6 +120,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Friend friend = new Friend();
 
         friend.set_ID(json.getString("_ID"));
+        friend.setUSER_ID(json.getString("USER_ID"));
         friend.set_NAME(json.getString("_NAME"));
         friend.set_NUMBER(json.getString("_NUMBER"));
         friend.set_EMAIL(json.getString("_EMAIL"));

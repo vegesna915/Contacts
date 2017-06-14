@@ -1,13 +1,9 @@
 package com.example.varma.contacts.Objects;
 
-/**
- * Created by Varma on 4/18/2017.
- */
 
 public class Request {
 
     private String REQUEST_ID, SENDER_ID, RECEIVER_ID, IS_PENDING, IS_ACCEPTED, _Name, IMAGE_URL, IS_SEND;
-
 
     public String get_Name() {
         return _Name;

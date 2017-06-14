@@ -17,6 +17,7 @@ public class FriendsDb {
 
     private static final String TABLE_FRIENDS = "FRIENDS_TABLE";
     private static final String FRIENDS_ID = "_ID";
+    private static final String FRIENDS_USER_ID = "USER_ID";
     private static final String FRIENDS_NAME = "_NAME";
     private static final String FRIENDS_EMAIL = "_EMAIL";
     private static final String FRIENDS_NUMBER = "_NUMBER";
@@ -36,7 +37,8 @@ public class FriendsDb {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(FRIENDS_ID, Integer.parseInt(friend.get_ID()));
+        values.put(FRIENDS_ID, friend.get_ID());
+        values.put(FRIENDS_USER_ID, friend.getUSER_ID());
         values.put(FRIENDS_NAME, friend.get_NAME()); // Friend Name
         values.put(FRIENDS_NUMBER, friend.get_NUMBER()); // Friend Phone Number
         values.put(FRIENDS_EMAIL, friend.get_EMAIL()); // Friend Email
@@ -55,6 +57,7 @@ public class FriendsDb {
         Friend friend = null;
         String[] columns = {
                 FRIENDS_ID,
+                FRIENDS_USER_ID,
                 FRIENDS_NAME,
                 FRIENDS_NUMBER,
                 FRIENDS_EMAIL,
@@ -71,6 +74,7 @@ public class FriendsDb {
             if (cursor.moveToFirst()) {
                 friend = new Friend();
                 friend.set_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_ID)));
+                friend.setUSER_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_USER_ID)));
                 friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
                 friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
                 friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));
@@ -93,6 +97,7 @@ public class FriendsDb {
         Friend friend = null;
         String[] columns = {
                 FRIENDS_ID,
+                FRIENDS_USER_ID,
                 FRIENDS_NAME,
                 FRIENDS_NUMBER,
                 FRIENDS_EMAIL,
@@ -109,6 +114,7 @@ public class FriendsDb {
             if (cursor.moveToFirst()) {
                 friend = new Friend();
                 friend.set_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_ID)));
+                friend.setUSER_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_USER_ID)));
                 friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
                 friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
                 friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));
@@ -144,6 +150,7 @@ public class FriendsDb {
                 friend = new Friend();
 
                 friend.set_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_ID)));
+                friend.setUSER_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_USER_ID)));
                 friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
                 friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
                 friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));

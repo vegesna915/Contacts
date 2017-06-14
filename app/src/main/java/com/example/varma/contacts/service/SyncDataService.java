@@ -141,6 +141,7 @@ public class SyncDataService extends IntentService {
 
 
                     friend.set_ID(friendJson.getString("_ID"));
+                    friend.setUSER_ID(friendJson.getString("USER_ID"));
                     friend.set_NAME(friendJson.getString("_NAME"));
                     friend.set_NUMBER(friendJson.getString("_NUMBER"));
                     friend.setIMAGE_URL(friendJson.getString("IMAGE_URL"));

@@ -4,8 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
-public class DatabaseHelper extends SQLiteOpenHelper {
+class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Contacts.db";
     private static final String TABLE_FRIENDS = "FRIENDS_TABLE";
@@ -17,8 +16,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String FRIENDS_NUMBER = "_NUMBER";
     private static final String FRIENDS_IMAGE_URL = "IMAGE_URL";
     private static final String FRIENDS_OLD_NUMBER = "OLD_NUMBER";
+    private static final String FRIENDS_USER_ID = "USER_ID";
+
 
     private static final String REQUEST_ID = "_ID";
+    private static final String REQUEST_USER_ID = "USER_ID";
     private static final String REQUEST_SENDER_ID = "SENDER_ID";
     private static final String REQUEST_RECEIVER_ID = "RECEIVER_ID";
     private static final String REQUEST_IS_PENDING = "IS_PENDING";
@@ -27,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String REQUEST_NAME = "_NAME";
     private static final String REQUEST_IMAGE = "IMAGE_URL";
 
-    public DatabaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -37,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_FRIENDS_TABLE = "CREATE TABLE " + TABLE_FRIENDS
                 + "("
                 + FRIENDS_ID + " TEXT PRIMARY KEY,"
+                + FRIENDS_USER_ID + " TEXT,"
                 + FRIENDS_NAME + " TEXT,"
                 + FRIENDS_NUMBER + " TEXT,"
                 + FRIENDS_EMAIL + " TEXT,"

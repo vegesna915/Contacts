@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.example.varma.contacts.Objects.Request;
 import com.example.varma.contacts.R;
+
 import java.util.ArrayList;
 
 
@@ -41,6 +43,7 @@ public class RequestsDb {
         values.put(REQUEST_IS_SEND, request.getIS_SEND());
         values.put(REQUEST_NAME, request.get_Name());
         values.put(REQUEST_IMAGE, request.getIMAGE_URL());
+
         // Inserting Row
         db.insert(TABLE_REQUESTS, null, values);
         db.close(); // Closing database connection

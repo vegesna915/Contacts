@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".UserProfileActivity">
+    tools:context=".UserProfileActivity"
+    tools:ignore="HardcodedText">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_userProfile"
         android:layout_width="match_parent"
-        android:layout_height="218dp"
+        android:layout_height="300dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -26,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
+                android:contentDescription="background"
                 android:scaleType="centerCrop"
                 android:src="@drawable/material_background4"
                 app:layout_collapseMode="parallax"

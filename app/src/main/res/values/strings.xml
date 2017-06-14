@@ -13,6 +13,7 @@
     <string name="loginEmail">loginEmail</string>
     <string name="loginIsGoogle">loginIsGoogle</string>
     <string name="userName">loginUserName</string>
+    <string name="userId">userId</string>
     <string name="userImageUrl">userImageUrl</string>
     <string name="userGmailId">userGmailId</string>
     <string name="userNumber">userNumber</string>

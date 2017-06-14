@@ -91,19 +91,13 @@ public class SearchActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (Utils.internetConnectionStatus(SearchActivity.this)) {
+                    CheckConnection checkConnection = new CheckConnection();
+                    checkConnection.execute(enteredEmail);
 
-                if (Utils.isEmailValid(enteredEmail)) {
-                    if (Utils.internetConnectionStatus(SearchActivity.this)) {
-                        CheckConnection checkConnection = new CheckConnection();
-                        checkConnection.execute(enteredEmail);
-
-                    } else {
-                        Toast.makeText(SearchActivity.this, " Unable to Access Network ", Toast.LENGTH_SHORT).show();
-                    }
                 } else {
-                    emailFriendView.setError("Enter Valid Email Address");
+                    Toast.makeText(SearchActivity.this, " Unable to Access Network ", Toast.LENGTH_SHORT).show();
                 }
-
 
             }
         });

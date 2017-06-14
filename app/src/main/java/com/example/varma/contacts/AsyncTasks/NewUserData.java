@@ -35,6 +35,7 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
         String number = sharedPref.getString(activity.getString(R.string.userNumber), "");
         String email = sharedPref.getString(activity.getString(R.string.loginEmail), "");
         String imageUrl = sharedPref.getString(activity.getString(R.string.userImageUrl), "");
+        String userId = sharedPref.getString(activity.getString(R.string.userId), "");
 
         String token = sharedPref.getString(activity.getString(R.string.userToken), "");
         if (token.equals("")) {
@@ -44,6 +45,7 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
         String urlString = "http://byvarma.esy.es/New/createNewUser.php";
         String parameters = "GOOGLE_ID=" + googleId +
                 "&_NAME=" + name +
+                "&USER_ID=" + userId +
                 "&_NUMBER=" + number +
                 "&_EMAIL=" + email +
                 "&IMAGE_URL=" + imageUrl +
@@ -71,6 +73,7 @@ public class NewUserData extends AsyncTask<Void, Void, JSONObject> {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString(activity.getString(R.string.userDatabaseId), json.getString("_ID"));
+            editor.putBoolean(activity.getString(R.string.loginStatus), true);
             editor.commit();
             //getToken();
 

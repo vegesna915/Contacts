@@ -14,7 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class FriendProfileActivity extends AppCompatActivity {
 
     Friend friend;
-    TextView nameView, numberHomeView, emailHomeView;
+    TextView nameView, numberHomeView, emailHomeView, userIdView;
     CircularImageView circularImageView;
     Context context;
     View numberLayout, emailLayout;
@@ -64,7 +64,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         listeners();
 
         getCallLogs();
-        Log.i("length", String.valueOf(callLogs.size()));
+
         adapter = new RecyclerViewAdapterContactInfo(callLogs);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
@@ -81,6 +81,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         numberLayout = findViewById(R.id.layout_numberHome);
         emailLayout = findViewById(R.id.layout_emailHome);
         recyclerView = (RecyclerView) findViewById(R.id.friendCallLog);
+        userIdView = (TextView) findViewById(R.id.userIdView_friend);
 
     }
 
@@ -89,6 +90,8 @@ public class FriendProfileActivity extends AppCompatActivity {
         nameView.setText(friend.get_NAME());
         numberHomeView.setText(friend.get_NUMBER());
         emailHomeView.setText(friend.get_EMAIL());
+        String userId = "#" + friend.getUSER_ID();
+        userIdView.setText(userId);
         if (!friend.getIMAGE_URL().equals("") && Utils.internetConnectionStatus(this)) {
             Glide.with(this).load(friend.getIMAGE_URL()).dontAnimate().into(circularImageView);
         }
@@ -132,7 +135,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     finish();
-                    Log.i("Finished sending email.", "");
+
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(FriendProfileActivity.this, "There is no Email Sending App Installed.", Toast.LENGTH_SHORT).show();
                 }
@@ -196,12 +199,9 @@ public class FriendProfileActivity extends AppCompatActivity {
 
 
             String where = " REPLACE(REPLACE(" + CallLog.Calls.NUMBER + ",' ',''),'+91','') IN (?,?)";
-            Log.i("length", where);
 
 
             String[] selectionArgs = new String[]{friend.get_NUMBER(), "0" + friend.get_NUMBER()};
-
-            Log.i("length", friend.get_NUMBER());
 
 
             String sortingOrder = CallLog.Calls.DATE + " DESC ";
@@ -235,5 +235,8 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 }

@@ -32,6 +32,7 @@ public class Utils {
     }
 
     public static String getFirstLetter(String name) {
+
         name = name.trim();
         if (name.length() <= 0) {
             return " ";
@@ -42,11 +43,32 @@ public class Utils {
         } else {
             return " ";
         }
-
     }
 
     public static boolean isUserNameValid(String name) {
         return Pattern.matches("^[a-zA-Z](?:[_ -]?[a-zA-Z0-9])*$", name);
+    }
+
+    public static String isUserIdValid(String userId) {
+
+        if (userId.length() < 4) {
+            return "Minimum length is 4";
+
+        }
+
+        if (userId.length() > 16) {
+            return "Maximum length is 15";
+        }
+
+        if (userId.contains(" ")) {
+            return "No Spaces in User Id";
+        }
+
+        if (Pattern.matches("^[a-zA-Z](?:[_]?[a-zA-Z0-9])*$", userId)) {
+            return "";
+        } else {
+            return "User Id Should Contain Only Letters and Numbers";
+        }
     }
 
     public static boolean internetConnectionStatus(Context context) {

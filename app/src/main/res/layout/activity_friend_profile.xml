@@ -67,6 +67,15 @@
                         android:text="Name"
                         android:textColor="@color/colorWhite"
                         android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/userIdView_friend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="#UserId"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14sp" />
+
                 </LinearLayout>
 
 

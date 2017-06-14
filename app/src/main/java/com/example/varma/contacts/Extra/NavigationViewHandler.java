@@ -19,7 +19,7 @@ import com.example.varma.contacts.LoginActivity;
 import com.example.varma.contacts.R;
 import com.example.varma.contacts.RequestsActivity;
 import com.example.varma.contacts.SearchActivity;
-import com.example.varma.contacts.TestActivty;
+import com.example.varma.contacts.TestActivity;
 
 
 public class NavigationViewHandler implements NavigationView.OnNavigationItemSelectedListener {
@@ -98,7 +98,7 @@ public class NavigationViewHandler implements NavigationView.OnNavigationItemSel
             }
             case R.id.nav_share: {
 
-                Intent toTestActivity = new Intent(context, TestActivty.class);
+                Intent toTestActivity = new Intent(context, TestActivity.class);
                 context.startActivity(toTestActivity);
                 break;
             }
@@ -120,6 +120,7 @@ public class NavigationViewHandler implements NavigationView.OnNavigationItemSel
                 editor.putString(context.getString(R.string.userName), "");
                 editor.putString(context.getString(R.string.userGmailId), "");
                 editor.putString(context.getString(R.string.userNumber), "");
+                editor.putString(context.getString(R.string.userId), "");
 
                 FriendsDb friendsDb = new FriendsDb(activity);
                 friendsDb.deleteAllFriends();

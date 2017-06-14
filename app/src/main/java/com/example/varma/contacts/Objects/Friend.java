@@ -5,7 +5,17 @@ import com.example.varma.contacts.Extra.Utils;
 
 public class Friend {
 
-    private String _NAME, _NUMBER, _EMAIL, _ID, _NUMBER_OLD, IMAGE_URL, firstLetter;
+    private String _NAME, _NUMBER, _EMAIL, _ID, _NUMBER_OLD, IMAGE_URL, firstLetter, USER_ID;
+
+    public String getUSER_ID() {
+        return USER_ID;
+    }
+
+    public void setUSER_ID(String USER_ID) {
+        this.USER_ID = USER_ID;
+    }
+
+
 
     public String getFirstLetter() {
         return firstLetter;

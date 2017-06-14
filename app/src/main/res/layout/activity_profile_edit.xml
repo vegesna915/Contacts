@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.varma.contacts.ProfileEditActivity">
+    tools:context="com.example.varma.contacts.ProfileEditActivity"
+    tools:ignore="HardcodedText">
 
     <LinearLayout
+        android:id="@+id/layout_profileEdit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
@@ -20,10 +21,63 @@
             android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/textInputLayout"
+            android:id="@+id/textInputLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dip">
+
+            <EditText
+                android:id="@+id/userId_editProfile"
+                android:layout_width="300dip"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="User Id"
+                android:maxLength="20"
+                android:maxLines="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/checkButton_userId_ProfileEdit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:clickable="false"
+                    android:text="Check"
+                    android:textColor="@color/colorWhite"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/checkStatus_imageView"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="5dp"
+                    android:contentDescription="User Id Status"
+                    android:src="@drawable/ic_check_tick_icon"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar_checkUserId"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="5dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip">
 
             <EditText
                 android:id="@+id/nameUser_editProfile"
@@ -55,6 +109,7 @@
             android:id="@+id/saveButton_editProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:layout_marginTop="100dip"
             android:backgroundTint="@color/colorAccent"
             android:text="Save"

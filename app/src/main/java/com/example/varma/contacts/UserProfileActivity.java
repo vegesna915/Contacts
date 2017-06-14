@@ -36,7 +36,12 @@ public class UserProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile_activty);
+        sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
+        isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
+        isGoogleLogin = sharedPref.getBoolean(getString(R.string.loginIsGoogle), false);
+
+
+        setContentView(R.layout.activity_user_profile);
         isFirstResume = true;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_userProfile);
         setSupportActionBar(toolbar);
@@ -73,10 +78,6 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     void updateData() {
-        sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
-        isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
-        isGoogleLogin = sharedPref.getBoolean(getString(R.string.loginIsGoogle), false);
-
 
         if (isLogin) {
 
