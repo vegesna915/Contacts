@@ -42,7 +42,7 @@ public class SendRequestFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         RequestsDb requestsDb = new RequestsDb(context);
-        requests = requestsDb.getSendRequests();
+        requests = requestsDb.getPendingSendRequests();
 
 
         RecyclerViewAdapterSendRequest adapterSendRequest = new RecyclerViewAdapterSendRequest(requests);

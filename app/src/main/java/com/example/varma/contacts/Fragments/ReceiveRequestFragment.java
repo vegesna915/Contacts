@@ -40,7 +40,7 @@ public class ReceiveRequestFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         RequestsDb requestsDb = new RequestsDb(context);
-        requests = requestsDb.getReceivedRequests();
+        requests = requestsDb.getPendingReceivedRequests();
 
 
         RecyclerViewAdapterReceiveRequest adapterReceivedRequest = new RecyclerViewAdapterReceiveRequest(requests);

@@ -7,27 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "Contacts.db";
-    private static final String TABLE_FRIENDS = "FRIENDS_TABLE";
-    private static final String TABLE_REQUESTS = "REQUESTS_TABLE";
-
-    private static final String FRIENDS_ID = "_ID";
-    private static final String FRIENDS_NAME = "_NAME";
-    private static final String FRIENDS_EMAIL = "_EMAIL";
-    private static final String FRIENDS_NUMBER = "_NUMBER";
-    private static final String FRIENDS_IMAGE_URL = "IMAGE_URL";
-    private static final String FRIENDS_OLD_NUMBER = "OLD_NUMBER";
-    private static final String FRIENDS_USER_ID = "USER_ID";
-
-
-    private static final String REQUEST_ID = "_ID";
-    private static final String REQUEST_USER_ID = "USER_ID";
-    private static final String REQUEST_SENDER_ID = "SENDER_ID";
-    private static final String REQUEST_RECEIVER_ID = "RECEIVER_ID";
-    private static final String REQUEST_IS_PENDING = "IS_PENDING";
-    private static final String REQUEST_IS_ACCEPTED = "IS_ACCEPTED";
-    private static final String REQUEST_IS_SEND = "IS_SEND";
-    private static final String REQUEST_NAME = "_NAME";
-    private static final String REQUEST_IMAGE = "IMAGE_URL";
 
     DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -36,28 +15,28 @@ class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_FRIENDS_TABLE = "CREATE TABLE " + TABLE_FRIENDS
+        String CREATE_FRIENDS_TABLE = "CREATE TABLE " + FriendsDb.TABLE_FRIENDS
                 + "("
-                + FRIENDS_ID + " TEXT PRIMARY KEY,"
-                + FRIENDS_USER_ID + " TEXT,"
-                + FRIENDS_NAME + " TEXT,"
-                + FRIENDS_NUMBER + " TEXT,"
-                + FRIENDS_EMAIL + " TEXT,"
-                + FRIENDS_IMAGE_URL + " TEXT,"
-                + FRIENDS_OLD_NUMBER + " TEXT"
+                + FriendsDb.FRIENDS_ID + " TEXT PRIMARY KEY,"
+                + FriendsDb.FRIENDS_USER_ID + " TEXT,"
+                + FriendsDb.FRIENDS_NAME + " TEXT,"
+                + FriendsDb.FRIENDS_NUMBER + " TEXT,"
+                + FriendsDb.FRIENDS_EMAIL + " TEXT,"
+                + FriendsDb.FRIENDS_IMAGE_URL + " TEXT,"
+                + FriendsDb.FRIENDS_OLD_NUMBER + " TEXT"
                 + ")";
         db.execSQL(CREATE_FRIENDS_TABLE);
 
-        String CREATE_REQUESTS_TABLE = "CREATE TABLE " + TABLE_REQUESTS
+        String CREATE_REQUESTS_TABLE = "CREATE TABLE " + RequestsDb.TABLE_REQUESTS
                 + "("
-                + REQUEST_ID + " TEXT PRIMARY KEY,"
-                + REQUEST_SENDER_ID + " TEXT,"
-                + REQUEST_RECEIVER_ID + " TEXT,"
-                + REQUEST_IS_PENDING + " TEXT,"
-                + REQUEST_IS_ACCEPTED + " TEXT,"
-                + REQUEST_NAME + " TEXT,"
-                + REQUEST_IMAGE + " TEXT,"
-                + REQUEST_IS_SEND + " TEXT"
+                + RequestsDb.REQUEST_ID + " TEXT PRIMARY KEY,"
+                + RequestsDb.REQUEST_SENDER_ID + " TEXT,"
+                + RequestsDb.REQUEST_RECEIVER_ID + " TEXT,"
+                + RequestsDb.REQUEST_IS_PENDING + " TEXT,"
+                + RequestsDb.REQUEST_IS_ACCEPTED + " TEXT,"
+                + RequestsDb.REQUEST_NAME + " TEXT,"
+                + RequestsDb.REQUEST_IMAGE + " TEXT,"
+                + RequestsDb.REQUEST_IS_SEND + " TEXT"
                 + ")";
         db.execSQL(CREATE_REQUESTS_TABLE);
 
@@ -66,7 +45,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FRIENDS);
+        db.execSQL("DROP TABLE IF EXISTS " + FriendsDb.TABLE_FRIENDS);
+        db.execSQL("DROP TABLE IF EXISTS " + RequestsDb.TABLE_REQUESTS);
 
         // Create tables again
         onCreate(db);

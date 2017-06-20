@@ -1,8 +1,12 @@
 package com.example.varma.contacts.Adapters;
 
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +23,7 @@ import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.Objects.Request;
 import com.example.varma.contacts.R;
+import com.example.varma.contacts.service.RequestResponseJobService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
@@ -86,6 +91,22 @@ public class RecyclerViewAdapterReceiveRequest extends RecyclerView.Adapter<Recy
         holder.rejectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putString("REQUEST_RESPONSE", "REQUEST_REJECTED");
+                bundle.putString("REQUEST_ID", request.getREQUEST_ID());
+                bundle.putString("RECEIVER_ID", request.getRECEIVER_ID());
+                bundle.putString("SENDER_ID", request.getSENDER_ID());
+
+                int jobId = Integer.parseInt(request.getREQUEST_ID());
+                JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                JobInfo jobInfo = new JobInfo.Builder(jobId, new ComponentName(context, RequestResponseJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setExtras(bundle)
+                        .build();
+                jobScheduler.schedule(jobInfo);
+
                 requests.remove(position2);
                 notifyItemRemoved(position2);
                 notifyItemRangeChanged(position2, requests.size());
@@ -159,6 +180,7 @@ public class RecyclerViewAdapterReceiveRequest extends RecyclerView.Adapter<Recy
             try {
                 Friend friend = new Friend();
                 friend.set_ID(json.getString("_ID"));
+                friend.setUSER_ID(json.getString("USER_ID"));
                 friend.set_NAME(json.getString("_NAME"));
                 friend.set_NUMBER(json.getString("_NUMBER"));
                 friend.set_EMAIL(json.getString("_EMAIL"));

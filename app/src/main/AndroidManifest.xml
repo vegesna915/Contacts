@@ -41,7 +41,7 @@
         <activity
             android:name=".ContactInfoActivity"
             android:parentActivityName=".HomeActivity" />
-        <activity android:name=".TestActivty" />
+        <activity android:name=".TestActivity" />
         <activity
             android:name=".ProfileEditActivity"
             android:parentActivityName=".UserProfileActivity" />
@@ -86,6 +86,13 @@
             android:exported="false" />
         <service
             android:name=".service.SaveProfileEditDataJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".service.RequestResponseJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".service.UnFriendJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 

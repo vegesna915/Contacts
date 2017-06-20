@@ -2,7 +2,9 @@ package com.example.varma.contacts.service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -26,13 +28,17 @@ import org.json.JSONObject;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
-    private final static String messageType_Request = "newRequest";
-    private final static String messageType_Test = "Test";
-    private final static String messageType_RequestAccepted = "requestAccepted";
+    private final static String messageType_request = "newRequest";
+    private final static String messageType_test = "Test";
+    private final static String messageType_requestAccepted = "requestAccepted";
     private final static String messageType_updateFriendData = "updateFriendsData";
-
+    private final static String messageType_requestRejected = "requestRejected";
+    private final static String messageType_unFriend = "unFriend";
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
+        boolean isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
 
 
         if (remoteMessage.getData().size() <= 0) {
@@ -47,33 +53,54 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             switch (json.getString("messageType")) {
 
 
-                case messageType_Request: {
-                    newRequest(json);
+                case messageType_request: {
+
+                    if (isLogin) {
+                        newRequest(json);
+                    }
 
                     break;
                 }
 
-                case messageType_Test: {
+                case messageType_test: {
 
                     showNotification(json.getString("message"));
 
                     break;
                 }
 
-                case messageType_RequestAccepted: {
+                case messageType_requestAccepted: {
 
-                    requestAccepted(json);
+                    if (isLogin) {
+                        requestAccepted(json);
+
+                    }
+
 
                     break;
                 }
 
                 case messageType_updateFriendData: {
-
-                    updateFriendData(json);
+                    if (isLogin) {
+                        updateFriendData(json);
+                    }
 
                     break;
                 }
 
+                case messageType_requestRejected: {
+                    if (isLogin) {
+                        requestRejected(json);
+                    }
+                    break;
+                }
+
+                case messageType_unFriend: {
+                    if (isLogin) {
+                        unFriend(json);
+                    }
+                    break;
+                }
 
                 default: {
 
@@ -88,6 +115,38 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
 
+    }
+
+    private void unFriend(JSONObject json) throws JSONException {
+
+
+        Intent toHomeActivity = new Intent(this, HomeActivity.class);
+        toHomeActivity.putExtra(getString(R.string.putExtraPage_HomeActivity), "2");
+        toHomeActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+
+        stackBuilder.addNextIntent(toHomeActivity);
+        // Gets a PendingIntent containing the entire back stack
+        PendingIntent pendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        FriendsDb friendDb = new FriendsDb(this);
+
+        Friend friend;
+        String friendId = json.getString("FRIEND_ID");
+        friend = friendDb.getFriendById(friendId);
+        friendDb.unFriend(friendId);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setAutoCancel(true)
+                .setContentTitle("In Contact")
+                .setContentText(friend.get_NAME() + " has unfriended you")
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.ic_notification_small_icon)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.notify(Integer.parseInt(friendId), builder.build());
     }
 
     private void defaultNotification() {
@@ -105,7 +164,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setAutoCancel(true)
-                .setContentTitle("Default")
+                .setContentTitle("In Contact")
                 .setContentText("Default")
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_notification_small_icon)
@@ -149,8 +208,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setAutoCancel(true)
-                .setContentTitle("Friend Request Accepted")
-                .setContentText("By " + friend.get_NAME())
+                .setContentTitle("In Contact")
+                .setContentText("Friend Request Accepted By " + friend.get_NAME())
                 .setSound(notificationSound)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_notification_small_icon)
@@ -158,6 +217,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(Integer.parseInt(friend.get_ID()), builder.build());
+
+    }
+
+    private void requestRejected(JSONObject json) throws JSONException {
+
+        RequestsDb requestsDb = new RequestsDb(this);
+        requestsDb.requestRejected(json.getString("REQUEST_ID"));
+
 
     }
 
@@ -194,8 +261,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setAutoCancel(true)
-                .setContentTitle("New Contact Request")
-                .setContentText("From " + request.get_Name())
+                .setContentTitle("In Contact")
+                .setContentText("New Contact Request From " + request.get_Name())
                 .setSmallIcon(R.drawable.ic_notification_small_icon)
                 .setSound(notificationSound)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -254,7 +321,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setAutoCancel(true)
-                .setContentTitle(friend.get_NAME())
+                .setContentTitle("In Contact")
                 .setContentText(friend.get_NAME() + " has updated his profile ")
                 .setSmallIcon(R.drawable.ic_notification_small_icon)
                 .setSound(notificationSound)

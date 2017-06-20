@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.varma.contacts.Objects.Request;
 import com.example.varma.contacts.R;
@@ -14,15 +15,15 @@ import java.util.ArrayList;
 
 public class RequestsDb {
 
-    private static final String TABLE_REQUESTS = "REQUESTS_TABLE";
-    private static final String REQUEST_ID = "_ID";
-    private static final String REQUEST_SENDER_ID = "SENDER_ID";
-    private static final String REQUEST_RECEIVER_ID = "RECEIVER_ID";
-    private static final String REQUEST_IS_PENDING = "IS_PENDING";
-    private static final String REQUEST_IS_ACCEPTED = "IS_ACCEPTED";
-    private static final String REQUEST_IS_SEND = "IS_SEND";
-    private static final String REQUEST_NAME = "_NAME";
-    private static final String REQUEST_IMAGE = "IMAGE_URL";
+    static final String TABLE_REQUESTS = "REQUESTS_TABLE";
+    static final String REQUEST_ID = "_ID";
+    static final String REQUEST_SENDER_ID = "SENDER_ID";
+    static final String REQUEST_RECEIVER_ID = "RECEIVER_ID";
+    static final String REQUEST_IS_PENDING = "IS_PENDING";
+    static final String REQUEST_IS_ACCEPTED = "IS_ACCEPTED";
+    static final String REQUEST_IS_SEND = "IS_SEND";
+    static final String REQUEST_NAME = "_NAME";
+    static final String REQUEST_IMAGE = "IMAGE_URL";
     private Context context;
 
     public RequestsDb(Context context) {
@@ -118,7 +119,7 @@ public class RequestsDb {
 
     }
 
-    public ArrayList<Request> getSendRequests() {
+    public ArrayList<Request> getPendingSendRequests() {
         ArrayList<Request> requests = new ArrayList<>();
         Request request;
 
@@ -159,7 +160,7 @@ public class RequestsDb {
         return requests;
     }
 
-    public ArrayList<Request> getReceivedRequests() {
+    public ArrayList<Request> getPendingReceivedRequests() {
         ArrayList<Request> requests = new ArrayList<>();
         Request request;
 
@@ -171,9 +172,9 @@ public class RequestsDb {
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_REQUESTS + " WHERE " +
                 REQUEST_RECEIVER_ID + " = ? AND " +
-                REQUEST_IS_PENDING + " = ?;";
+                REQUEST_IS_PENDING + " = '1';";
 
-        String[] selectArgs = {_ID, "1"};
+        String[] selectArgs = {_ID};
 
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -215,23 +216,7 @@ public class RequestsDb {
         return count;
     }
 
-    // Updating single contact
-    public int updateRequest(Request request) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(REQUEST_IS_PENDING, request.getIS_PENDING());
-        values.put(REQUEST_IS_ACCEPTED, request.getIS_ACCEPTED());
-
-        // updating row
-
-        String where = REQUEST_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(request.getREQUEST_ID())};
-        int update = db.update(TABLE_REQUESTS, values, where, selectionArgs);
-        db.close();
-        return update;
-    }
 
     // Deleting single contact
     public void deleteRequest(String _ID) {
@@ -249,7 +234,7 @@ public class RequestsDb {
         db.delete(TABLE_REQUESTS, null, null);
     }
 
-    public void requestAccepted(String _ID) {
+    public void requestAccepted(String REQUEST_ID) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
@@ -257,11 +242,50 @@ public class RequestsDb {
         values.put(REQUEST_IS_PENDING, "0");
         values.put(REQUEST_IS_ACCEPTED, "1");
 
-        String where = REQUEST_ID + " = ?";
-        String[] selectionArgs = {_ID};
+        String where = RequestsDb.REQUEST_ID + " = ?";
+        String[] selectionArgs = {REQUEST_ID};
 
         db.update(TABLE_REQUESTS, values, where, selectionArgs);
         db.close();
+    }
+
+    public void requestRejected(String REQUEST_ID) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(REQUEST_IS_PENDING, "0");
+        values.put(REQUEST_IS_ACCEPTED, "0");
+
+        String where = RequestsDb.REQUEST_ID + " = ?";
+        String[] selectionArgs = {REQUEST_ID};
+
+        int i = db.update(TABLE_REQUESTS, values, where, selectionArgs);
+
+        Log.i("rejectrequest", "rejectRequest = " + i);
+
+        db.close();
+    }
+
+
+    public boolean isRequestPending(String searchId) {
+
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        String countQuery = "SELECT  * FROM " + TABLE_REQUESTS
+                + " WHERE ((" + REQUEST_RECEIVER_ID + " = ? OR " + REQUEST_SENDER_ID + " = ?) AND "
+                + REQUEST_IS_PENDING + " = ?);";
+
+        String[] argus = {searchId, searchId, "1"};
+
+        Cursor cursor = db.rawQuery(countQuery, argus);
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+
+        return count != 0;
     }
 
 }

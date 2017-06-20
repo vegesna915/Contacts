@@ -1,20 +1,27 @@
 package com.example.varma.contacts;
 
 import android.app.Activity;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.CallLog;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +33,7 @@ import com.example.varma.contacts.Extra.PermissionsClass;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Objects.Friend;
+import com.example.varma.contacts.service.UnFriendJobService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
@@ -57,6 +65,12 @@ public class FriendProfileActivity extends AppCompatActivity {
 
         FriendsDb friendsDb = new FriendsDb(this);
         friend = friendsDb.getFriendById(getIntent().getStringExtra("FRIEND_ID"));
+
+        if (friend == null || friend.get_NAME() == null) {
+            Toast.makeText(context, "sorry, you have been unfriended", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
 
         declarations();
@@ -237,6 +251,56 @@ public class FriendProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.friend_profile_main_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+
+        switch (menuItem.getItemId()) {
+
+            case R.id.unFriendMenuItem: {
+                AlertDialog.Builder builder = new AlertDialog.Builder(FriendProfileActivity.this);
+                builder.setCancelable(true)
+                        .setTitle("Unfriend")
+                        .setMessage("Are you sure you want to unfriend " + friend.get_NAME() + "?")
+                        .setPositiveButton("unfriend", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PersistableBundle bundle = new PersistableBundle();
+                                bundle.putString(UnFriendJobService.INPUT_FRIEND_ID, friend.get_ID());
+
+                                JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+
+                                int jobId = Integer.parseInt(friend.get_ID());
+                                JobInfo jobInfo = new JobInfo.Builder(jobId, new ComponentName(FriendProfileActivity.this, UnFriendJobService.class))
+                                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                                        .setExtras(bundle)
+                                        .build();
+
+                                jobScheduler.schedule(jobInfo);
+                                FriendsDb friendDb = new FriendsDb(FriendProfileActivity.this);
+                                friendDb.unFriend(friend.get_ID());
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .create().show();
+
+                return true;
+            }
+
+            default: {
+                return super.onOptionsItemSelected(menuItem);
+            }
+        }
     }
 }

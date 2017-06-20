@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.AsyncTasks.SendRequest;
+import com.example.varma.contacts.Database.FriendsDb;
+import com.example.varma.contacts.Database.RequestsDb;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -31,9 +33,9 @@ public class SearchActivity extends AppCompatActivity {
     ProgressBar progressBar;
     View layout;
     CircularImageView circleImageView;
-    TextView userNameText;
+    TextView userNameText, userIdText;
     Button sendRequestButton;
-    String userId, userName, userImage;
+    String Id, userName, userImage, userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class SearchActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.loginDetails), Context.MODE_PRIVATE);
         email = sharedPref.getString(getString(R.string.loginEmail), "");
+        userId = sharedPref.getString(getString(R.string.userDatabaseId), "");
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar_search);
         emailFriendView = (EditText) findViewById(R.id.emailFriend_search);
@@ -52,6 +55,7 @@ public class SearchActivity extends AppCompatActivity {
         layout = findViewById(R.id.Layout_search);
         circleImageView = (CircularImageView) findViewById(R.id.userImage_search);
         userNameText = (TextView) findViewById(R.id.userName_search);
+        userIdText = (TextView) findViewById(R.id.userId_search);
         sendRequestButton = (Button) findViewById(R.id.sendRequest);
 
 
@@ -82,14 +86,20 @@ public class SearchActivity extends AppCompatActivity {
 
                 String enteredEmail = emailFriendView.getText().toString();
 
-                if (enteredEmail.equals("")) {
-                    emailFriendView.setError("Enter Email Address");
+                if (enteredEmail.length() < 4 || enteredEmail.contains(" ")) {
+                    emailFriendView.setError("Enter valid Email/UserId");
                     return;
                 }
-                if (email.equals(enteredEmail)) {
-                    emailFriendView.setError("That's your Email Address");
+
+
+                boolean isEmail = !Utils.isEmailValid(enteredEmail);
+                boolean isUserId = !Utils.isUserIdValid(enteredEmail).equals("");
+
+                if (isEmail && isUserId) {
+                    emailFriendView.setError("Enter valid Email/UserId");
                     return;
                 }
+
 
                 if (Utils.internetConnectionStatus(SearchActivity.this)) {
                     CheckConnection checkConnection = new CheckConnection();
@@ -105,7 +115,26 @@ public class SearchActivity extends AppCompatActivity {
         sendRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SendRequest sendRequest = new SendRequest(activity, userId, userName, userImage);
+
+                if (Id.equals(userId)) {
+                    Toast.makeText(activity, "Can't send request to a yourself", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                FriendsDb friendsDb = new FriendsDb(SearchActivity.this);
+                if (friendsDb.isFriend(Id)) {
+                    Toast.makeText(activity, "Can't send request to a friend", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                RequestsDb requestDb = new RequestsDb(SearchActivity.this);
+
+                if (requestDb.isRequestPending(Id)) {
+                    Toast.makeText(activity, "There is a pending request", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                SendRequest sendRequest = new SendRequest(activity, Id, userName, userImage);
                 sendRequest.execute((Void) null);
             }
         });
@@ -113,7 +142,6 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private class CheckConnection extends AsyncTask<String, Void, JSONObject> {
-
 
         @Override
         protected void onPreExecute() {
@@ -125,12 +153,10 @@ public class SearchActivity extends AppCompatActivity {
 
         @Override
         protected JSONObject doInBackground(String... strings) {
-
             String urlString = "http://byvarma.esy.es/New/getUserDetails.php";
             String parameters = "_EMAIL=" + strings[0];
 
             return WebServiceConnection.getData(urlString, parameters);
-
         }
 
         @Override
@@ -147,12 +173,14 @@ public class SearchActivity extends AppCompatActivity {
             String _EXISTS = "0";
             String _ID = "";
             String _NAME = "";
+            String USER_ID = "";
             String IMAGE_URL = "";
             try {
                 _EXISTS = json.getString("_EXISTS");
                 if (_EXISTS != null && _EXISTS.equals("1")) {
                     _ID = json.getString("_ID");
                     _NAME = json.getString("_NAME");
+                    USER_ID = "#" + json.getString("USER_ID");
                     IMAGE_URL = json.getString("IMAGE_URL");
                 }
 
@@ -165,16 +193,17 @@ public class SearchActivity extends AppCompatActivity {
                     cardViewDetails.setVisibility(View.VISIBLE);
 
                     userNameText.setText(_NAME);
+                    userIdText.setText(USER_ID);
                     if (!IMAGE_URL.equals("")) {
                         Glide.with(activity).load(IMAGE_URL).dontAnimate().into(circleImageView);
                     }
-                    userId = _ID;
+                    Id = _ID;
                     userName = _NAME;
                     userImage = IMAGE_URL;
 
 
                 } else {
-                    Toast.makeText(activity, " Entered Email is Not Registered ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, " Entered Email/UserId is Not Registered ", Toast.LENGTH_SHORT).show();
                 }
 
                 layout.setClickable(true);
@@ -182,10 +211,6 @@ public class SearchActivity extends AppCompatActivity {
                 cardViewSearch.setClickable(true);
                 progressBar.setVisibility(View.GONE);
             }
-
-
         }
     }
-
-
 }

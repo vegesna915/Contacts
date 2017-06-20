@@ -119,10 +119,13 @@ public class SyncDataService extends IntentService {
                 for (int i = 0; i < requests.size(); i++) {
                     requestDb.addRequest(requests.get(i));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
 
 
                 // Getting all Friends Data
-
                 String urlString3 = "http://byvarma.esy.es/New/getAllFriends.php";
                 String parameters3 = "_ID=" + _ID +
                         "&GOOGLE_ID==" + GOOGLE_ID;
@@ -139,7 +142,6 @@ public class SyncDataService extends IntentService {
                     friendJson = friendsJsonArray.getJSONObject(i);
                     friend = new Friend();
 
-
                     friend.set_ID(friendJson.getString("_ID"));
                     friend.setUSER_ID(friendJson.getString("USER_ID"));
                     friend.set_NAME(friendJson.getString("_NAME"));
@@ -147,7 +149,6 @@ public class SyncDataService extends IntentService {
                     friend.setIMAGE_URL(friendJson.getString("IMAGE_URL"));
                     friend.set_EMAIL(friendJson.getString("_EMAIL"));
                     friend.set_NUMBER_OLD("");
-
                     friendsDb.addFriend(friend);
 
                 }

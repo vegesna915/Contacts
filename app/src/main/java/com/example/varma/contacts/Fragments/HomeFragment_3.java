@@ -96,10 +96,7 @@ public class HomeFragment_3 extends Fragment {
 
     private void adapterUpdate() {
         if (adapter != null) {
-            Log.i("lifecycle", "updateFriends adapter != null ");
             adapter.updateFriendsList(this.friends);
-        } else {
-            Log.i("lifecycle", "updateFriends adapter != null ");
         }
     }
 

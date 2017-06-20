@@ -15,14 +15,14 @@ import java.util.ArrayList;
 public class FriendsDb {
 
 
-    private static final String TABLE_FRIENDS = "FRIENDS_TABLE";
-    private static final String FRIENDS_ID = "_ID";
-    private static final String FRIENDS_USER_ID = "USER_ID";
-    private static final String FRIENDS_NAME = "_NAME";
-    private static final String FRIENDS_EMAIL = "_EMAIL";
-    private static final String FRIENDS_NUMBER = "_NUMBER";
-    private static final String FRIENDS_IMAGE_URL = "IMAGE_URL";
-    private static final String FRIENDS_OLD_NUMBER = "OLD_NUMBER";
+    static final String TABLE_FRIENDS = "FRIENDS_TABLE";
+    static final String FRIENDS_ID = "_ID";
+    static final String FRIENDS_USER_ID = "USER_ID";
+    static final String FRIENDS_NAME = "_NAME";
+    static final String FRIENDS_EMAIL = "_EMAIL";
+    static final String FRIENDS_NUMBER = "_NUMBER";
+    static final String FRIENDS_IMAGE_URL = "IMAGE_URL";
+    static final String FRIENDS_OLD_NUMBER = "OLD_NUMBER";
 
     private Context context;
 
@@ -50,46 +50,7 @@ public class FriendsDb {
         db.close(); // Closing database connection
     }
 
-    // Getting single friend
-    public Friend getFriendByEmail(String email) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-        Friend friend = null;
-        String[] columns = {
-                FRIENDS_ID,
-                FRIENDS_USER_ID,
-                FRIENDS_NAME,
-                FRIENDS_NUMBER,
-                FRIENDS_EMAIL,
-                FRIENDS_IMAGE_URL,
-                FRIENDS_OLD_NUMBER
-        };
 
-        String where = FRIENDS_EMAIL + "=?";
-
-        String[] selectionArg = {email};
-
-        Cursor cursor = db.query(TABLE_FRIENDS, columns, where, selectionArg, null, null, null, null);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                friend = new Friend();
-                friend.set_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_ID)));
-                friend.setUSER_ID(cursor.getString(cursor.getColumnIndex(FRIENDS_USER_ID)));
-                friend.set_NAME(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
-                friend.set_NUMBER(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
-                friend.set_EMAIL(cursor.getString(cursor.getColumnIndex(FRIENDS_EMAIL)));
-                friend.setIMAGE_URL(cursor.getString(cursor.getColumnIndex(FRIENDS_IMAGE_URL)));
-                friend.set_NUMBER_OLD(cursor.getString(cursor.getColumnIndex(FRIENDS_OLD_NUMBER)));
-                // return contact
-
-            }
-            cursor.close();
-        }
-
-
-        db.close();
-        return friend;
-    }
 
     public Friend getFriendById(String _ID) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
@@ -201,7 +162,7 @@ public class FriendsDb {
     }
 
     // Deleting single contact
-    public void deleteFriend(String _ID) {
+    public void unFriend(String _ID) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.delete(TABLE_FRIENDS, FRIENDS_ID + " = ?",
@@ -214,6 +175,23 @@ public class FriendsDb {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.delete(TABLE_FRIENDS, null, null);
         db.close();
+    }
+
+    public boolean isFriend(String _ID) {
+
+        String countQuery = "SELECT  * FROM " + TABLE_FRIENDS
+                + " WHERE " + FRIENDS_ID + " = " + _ID;
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+
+        db.close();
+
+        // return count
+        return count != 0;
+
     }
 
 }

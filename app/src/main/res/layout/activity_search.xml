@@ -131,6 +131,16 @@
                 android:textColor="@color/colorPrimaryLight"
                 android:textSize="24sp" />
 
+            <TextView
+                android:id="@+id/userId_search"
+                style="?android:textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="4dp"
+                android:text="#userId"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="16sp" />
+
             <Button
                 android:id="@+id/sendRequest"
                 android:layout_width="wrap_content"
