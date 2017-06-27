@@ -26,6 +26,7 @@ public class WebServiceConnection {
             connection.setDoOutput(true);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setRequestMethod("POST");
+            connection.setConnectTimeout(10000);
 
 
             request = new OutputStreamWriter(connection.getOutputStream());

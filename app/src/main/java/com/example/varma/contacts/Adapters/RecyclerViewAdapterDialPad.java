@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.varma.contacts.ContactInfoActivity;
@@ -66,6 +65,7 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
             @Override
             public void onClick(View view) {
                 String number = infos.get(position).getNumber().trim();
+                number = number.replace("#", Uri.encode("#"));
                 number = "tel:" + number;
 
                 Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
@@ -74,7 +74,6 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
                 } catch (SecurityException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -93,7 +92,6 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView nameView, numberView;
-        ImageView iconView;
         ImageButton infoButton;
         View callLayout;
 
@@ -101,7 +99,6 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
             super(itemView);
             nameView = (TextView) itemView.findViewById(R.id.callerName_dialPadSearch);
             numberView = (TextView) itemView.findViewById(R.id.callerNumber_dialPadSearch);
-            iconView = (ImageView) itemView.findViewById(R.id.profileIcon_dialPadSearch);
             infoButton = (ImageButton) itemView.findViewById(R.id.callerInfo_button);
             callLayout = itemView.findViewById(R.id.linearLayout_dialPadSearch);
         }

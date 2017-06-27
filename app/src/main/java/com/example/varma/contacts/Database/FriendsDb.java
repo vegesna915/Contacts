@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.varma.contacts.Objects.DialerInfo;
 import com.example.varma.contacts.Objects.Friend;
 
 import java.util.ArrayList;
@@ -90,6 +91,38 @@ public class FriendsDb {
 
         db.close();
         return friend;
+    }
+
+    public ArrayList<DialerInfo> getDialerInfoByNumber(String _NUMBER) {
+
+        ArrayList<DialerInfo> infos = new ArrayList<>();
+        DialerInfo info;
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+        String[] columns = {
+                FRIENDS_NAME,
+                FRIENDS_NUMBER
+        };
+
+        String where = FRIENDS_NUMBER + " GLOB ? ";
+
+        String[] selectionArg = {"*" + _NUMBER + "*"};
+
+        Cursor cursor = db.query(TABLE_FRIENDS, columns, where, selectionArg, null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                info = new DialerInfo();
+                info.setName(cursor.getString(cursor.getColumnIndex(FRIENDS_NAME)));
+                info.setNumber(cursor.getString(cursor.getColumnIndex(FRIENDS_NUMBER)));
+                infos.add(info);
+            }
+            cursor.close();
+        }
+
+
+        db.close();
+        return infos;
     }
 
     // Getting All friend

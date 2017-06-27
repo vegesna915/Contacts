@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="HardcodedText">
     <group android:checkableBehavior="none">
         <item
@@ -24,7 +24,7 @@
         <menu>
             <item
                 android:id="@+id/nav_about"
-                android:title="About This" />
+                android:title="About" />
             <item
                 android:id="@+id/nav_share"
                 android:title="Share" />

@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-
     <application
         android:allowBackup="true"
         android:fullBackupContent="false"
@@ -79,21 +78,25 @@
             android:parentActivityName=".HomeActivity" />
 
         <service
-            android:name=".service.SyncDataService"
-            android:exported="false" />
-        <service
-            android:name=".service.UpdateProfileDataService"
-            android:exported="false" />
-        <service
             android:name=".service.SaveProfileEditDataJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name=".service.RequestResponseJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
         <service
             android:name=".service.UnFriendJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".service.SyncDataJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <activity
+            android:name=".AboutActivity"
+            android:label="About"
+            android:parentActivityName=".HomeActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Settings" />
     </application>
 
 </manifest>

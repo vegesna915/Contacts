@@ -1,24 +1,24 @@
 package com.example.varma.contacts.AsyncTasks;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.TaskStackBuilder;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.varma.contacts.Extra.WebServiceConnection;
+import com.example.varma.contacts.LoginActivity;
 import com.example.varma.contacts.ProfileEditActivity;
 import com.example.varma.contacts.R;
 import com.example.varma.contacts.UserProfileActivity;
-import com.example.varma.contacts.service.SyncDataService;
-import com.google.android.gms.common.SignInButton;
+import com.example.varma.contacts.service.SyncDataJobService;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
@@ -27,20 +27,20 @@ import org.json.JSONObject;
 
 public class IsNewUser extends AsyncTask<Void, Void, String> {
 
-    private Context context;
-    private Activity activity;
+    private LoginActivity loginActivity;
     private String googleId;
 
-    public IsNewUser(Context context, String googleId) {
-        this.context = context;
-        this.activity = (Activity) context;
+    public IsNewUser(LoginActivity loginActivity, String googleId) {
+
+        this.loginActivity = loginActivity;
         this.googleId = googleId;
 
     }
 
     @Override
     protected void onPreExecute() {
-        ScrollView scrollView = (ScrollView) activity.findViewById(R.id.scrollView_login);
+
+        /*ScrollView scrollView = (ScrollView) activity.findViewById(R.id.scrollView_login);
         scrollView.setAlpha(0.3f);
         scrollView.setClickable(false);
 
@@ -50,18 +50,21 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
 
 
         ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar_login);
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);*/
+
+        loginActivity.progressBar(true);
+
     }
 
     @SuppressLint("ApplySharedPref")
     @Override
     protected String doInBackground(Void... voids) {
 
-        SharedPreferences sharedPref = activity.getSharedPreferences(
-                activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
-        String imageUrl = sharedPref.getString(activity.getString(R.string.userImageUrl), "");
+        SharedPreferences sharedPref = loginActivity.getSharedPreferences(
+                loginActivity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+        String imageUrl = sharedPref.getString(loginActivity.getString(R.string.userImageUrl), "");
 
-        String token = sharedPref.getString(activity.getString(R.string.userToken), "");
+        String token = sharedPref.getString(loginActivity.getString(R.string.userToken), "");
         if (token.equals("")) {
             token = FirebaseInstanceId.getInstance().getToken();
         }
@@ -70,7 +73,7 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
         String parameters = "GOOGLE_ID=" + googleId +
                 "&IMAGE_URL=" + imageUrl +
                 "&_TOKEN=" + token;
-
+        Log.i("signin", "1");
         JSONObject json = WebServiceConnection.getData(urlString, parameters);
 
         if (json == null) {
@@ -80,14 +83,14 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
         String isNew = "0";
 
         try {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(
-                    context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = loginActivity.getSharedPreferences(
+                    loginActivity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(context.getString(R.string.userName), json.getString("_NAME"));
-            editor.putString(context.getString(R.string.userNumber), json.getString("_NUMBER"));
-            editor.putString(context.getString(R.string.userDatabaseId), json.getString("_ID"));
-            editor.putString(context.getString(R.string.userId), json.getString("USER_ID"));
+            editor.putString(loginActivity.getString(R.string.userName), json.getString("_NAME"));
+            editor.putString(loginActivity.getString(R.string.userNumber), json.getString("_NUMBER"));
+            editor.putString(loginActivity.getString(R.string.userDatabaseId), json.getString("_ID"));
+            editor.putString(loginActivity.getString(R.string.userId), json.getString("USER_ID"));
             editor.commit();
             isNew = json.getString("IS_NEW");
         } catch (JSONException e) {
@@ -104,23 +107,25 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String isNew) {
 
         if (isNew.equals("2")) {
-            SharedPreferences sharedPreferences = activity.getSharedPreferences(
-                    activity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = loginActivity.getSharedPreferences(
+                    loginActivity.getString(R.string.loginDetails), Context.MODE_PRIVATE);
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(activity.getString(R.string.loginStatus), false);
+            editor.putBoolean(loginActivity.getString(R.string.loginStatus), false);
             editor.apply();
-            Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show();
-            ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar_login);
+            Toast.makeText(loginActivity, "Login Failed", Toast.LENGTH_SHORT).show();
+            /*
+            ProgressBar progressBar = (ProgressBar) loginActivity.findViewById(R.id.progressBar_login);
             progressBar.setVisibility(View.GONE);
 
-            ScrollView scrollView = (ScrollView) activity.findViewById(R.id.scrollView_login);
+            ScrollView scrollView = (ScrollView) loginActivity.findViewById(R.id.scrollView_login);
             scrollView.setAlpha(1f);
             scrollView.setClickable(true);
 
-            SignInButton googleSignIn = (SignInButton) activity.findViewById(R.id.googleSignIn_login);
+            SignInButton googleSignIn = (SignInButton) loginActivity.findViewById(R.id.googleSignIn_login);
             googleSignIn.setAlpha(1f);
-            googleSignIn.setClickable(true);
+            googleSignIn.setClickable(true);*/
+            loginActivity.progressBar(false);
             return;
         }
 
@@ -134,7 +139,7 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
                 isNotNew();
                 break;
             default:
-                Toast.makeText(context, "not working: \n", Toast.LENGTH_LONG).show();
+                Toast.makeText(loginActivity, "not working: \n", Toast.LENGTH_LONG).show();
                 break;
         }
 
@@ -142,10 +147,10 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
     }
 
     private void isNew() {
-        Intent toEditProfile = new Intent(context, ProfileEditActivity.class);
+        Intent toEditProfile = new Intent(loginActivity, ProfileEditActivity.class);
         toEditProfile.putExtra("isNew", true);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(loginActivity);
 
         // Adds the back stack
         stackBuilder.addParentStack(UserProfileActivity.class);
@@ -166,8 +171,8 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
 
         callSyncDataService();
 
-        Intent toUserProfile = new Intent(activity, UserProfileActivity.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
+        Intent toUserProfile = new Intent(loginActivity, UserProfileActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(loginActivity);
 
         // Adds the back stack
         stackBuilder.addParentStack(UserProfileActivity.class);
@@ -185,8 +190,12 @@ public class IsNewUser extends AsyncTask<Void, Void, String> {
 
     private void callSyncDataService() {
 
-        Intent startSyncDataService = new Intent(activity, SyncDataService.class);
-        activity.startService(startSyncDataService);
+        JobScheduler jobScheduler = (JobScheduler) loginActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo jobInfo = new JobInfo.Builder(300, new ComponentName(loginActivity, SyncDataJobService.class))
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .build();
+        jobScheduler.schedule(jobInfo);
+
 
     }
 

@@ -22,8 +22,11 @@ import android.widget.Toast;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterContactInfo;
 import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Objects.Contact;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
@@ -33,6 +36,7 @@ public class ContactInfoActivity extends AppCompatActivity {
     RecyclerViewAdapterContactInfo adapter;
     ArrayList<CallLogInfo> callLogs = new ArrayList<>();
     boolean isFirstResume;
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +117,21 @@ public class ContactInfoActivity extends AppCompatActivity {
                 startActivity(toEditContact);
             }
         });
+
+        adView = (AdView) findViewById(R.id.adViewBanner_contactInfoActivity);
+        if (Utils.internetConnectionStatus(this)) {
+
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+
+            adView.loadAd(adRequest);
+        } else {
+            adView.setVisibility(View.GONE);
+        }
+
+
+
 
 
     }

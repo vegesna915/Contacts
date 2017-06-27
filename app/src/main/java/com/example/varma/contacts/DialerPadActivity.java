@@ -13,7 +13,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterDialPad;
+import com.example.varma.contacts.Database.FriendsDb;
 import com.example.varma.contacts.Extra.PermissionsClass;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.DialerInfo;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 public class DialerPadActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     String dialPadInput = "";
+    TextView headingView;
     EditText editText;
     boolean isDialPadUp = true;
     GridView dialerPad;
@@ -49,15 +50,17 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
         setContentView(R.layout.activity_dialer_pad);
 
         final View divider = findViewById(R.id.divider_dialPad);
+
+        headingView = (TextView) findViewById(R.id.headingTextView);
+
         editText = (EditText) findViewById(R.id.editText_dialPad);
-        editText.setRawInputType(InputType.TYPE_CLASS_TEXT);
         editText.setTextIsSelectable(true);
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isDialPadUp) {
                     dialerPad.setVisibility(View.VISIBLE);
-                    dialPadControl.setImageResource(R.drawable.ic_down_purpile);
+                    dialPadControl.setImageResource(R.drawable.ic_keyboard_arrow_down);
                     fab.setVisibility(View.VISIBLE);
                     divider.setVisibility(View.VISIBLE);
                     isDialPadUp = true;
@@ -73,7 +76,7 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (isDialPadUp) {
                     dialerPad.setVisibility(View.GONE);
-                    dialPadControl.setImageResource(R.drawable.ic_up_purpile);
+                    dialPadControl.setImageResource(R.drawable.ic_keyboard_arrow_up);
                     fab.setVisibility(View.GONE);
                     divider.setVisibility(View.GONE);
                     editText.setCursorVisible(false);
@@ -96,6 +99,7 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
                 if (PermissionsClass.hasPermissionCallPhone(DialerPadActivity.this)) {
 
                     String number = editText.getText().toString().trim();
+                    number = number.replace("#", Uri.encode("#"));
                     number = "tel:" + number;
 
                     Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
@@ -131,14 +135,14 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
 
                 if (isDialPadUp) {
                     dialerPad.setVisibility(View.GONE);
-                    dialPadControl.setImageResource(R.drawable.ic_up_purpile);
+                    dialPadControl.setImageResource(R.drawable.ic_keyboard_arrow_up);
                     fab.setVisibility(View.GONE);
                     divider.setVisibility(View.GONE);
                     editText.setCursorVisible(false);
                     isDialPadUp = false;
                 } else {
                     dialerPad.setVisibility(View.VISIBLE);
-                    dialPadControl.setImageResource(R.drawable.ic_down_purpile);
+                    dialPadControl.setImageResource(R.drawable.ic_keyboard_arrow_down);
                     fab.setVisibility(View.VISIBLE);
                     divider.setVisibility(View.VISIBLE);
                     isDialPadUp = true;
@@ -286,93 +290,13 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
 
     public void getInfo(String query) {
         infos.clear();
-        DialerInfo info;
-
-        ContentResolver contentResolver = getContentResolver();
 
         try {
-
-
-            Uri uriNumber = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-
-
-            String[] columnsNumbers = {
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER,
-            };
-
-
-            String whereNumber = ContactsContract.CommonDataKinds.Phone.IN_VISIBLE_GROUP + " ='1'" +
-                    " AND " +
-                    ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " = '1'" + " AND " +
-                    ContactsContract.CommonDataKinds.Phone.NUMBER + " GLOB ?";
-
-
-            String[] selectionArgsNumber = {"*" + query + "*"};
-
-
-            String sortingOrderNumber = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME;
-
-
-            Cursor cursorContacts = contentResolver.query(uriNumber, columnsNumbers, whereNumber,
-                    selectionArgsNumber, sortingOrderNumber);
-
-
-            if (cursorContacts != null) {
-                while (cursorContacts.moveToNext()) {
-                    info = new DialerInfo();
-
-                    info.setName(
-                            cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                    info.setNumber(
-                            cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-
-                    infos.add(info);
-
-
-                }
-                cursorContacts.close();
-
-            }
-
-
-            Uri uri = CallLog.Calls.CONTENT_URI;
-
-            String[] columnsNumber = {
-                    CallLog.Calls.NUMBER
-            };
-
-            String where = CallLog.Calls.NUMBER + " GLOB ? " + " AND " +
-                    CallLog.Calls.CACHED_NAME + " IS NULL";
-
-
-            String[] selectionArgs = {"*" + query + "*"};
-
-
-            String sortingOrder = CallLog.Calls.DATE + " DESC ";
-
-            Cursor cursorCallLog = contentResolver.query(uri, columnsNumber, where, selectionArgs, sortingOrder);
-
-
-            if (cursorCallLog != null) {
-                while (cursorCallLog.moveToNext()) {
-                    info = new DialerInfo();
-
-                    info.setNumber(
-                            cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.NUMBER)));
-
-                    infos.add(info);
-                }
-                cursorCallLog.close();
-            }
-
+            getFromContacts(query);
+            getFromFriends(query);
+            getFromCallLog(query);
 
         } catch (SecurityException e) {
-            e.printStackTrace();
-
-        } catch (Exception e) {
-
             e.printStackTrace();
 
         }
@@ -380,14 +304,117 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
 
     }
 
-    public void updateInfo() {
-        if (editText.getText().toString().equals("")) {
-            infos.clear();
-        } else {
-            getInfo(editText.getText().toString());
+    private void getFromFriends(String query) {
+        FriendsDb friendsDb = new FriendsDb(DialerPadActivity.this);
+        infos.addAll(friendsDb.getDialerInfoByNumber(query));
+    }
+
+
+    private void getFromCallLog(String query) throws SecurityException {
+
+
+        ContentResolver contentResolver = getContentResolver();
+        DialerInfo info;
+
+        Uri uri = CallLog.Calls.CONTENT_URI;
+
+        String[] columnsNumber = {
+                CallLog.Calls.NUMBER
+        };
+
+        String where = CallLog.Calls.NUMBER + " GLOB ? " + " AND " +
+                CallLog.Calls.CACHED_NAME + " IS NULL";
+
+
+        String[] selectionArgs = {"*" + query + "*"};
+
+
+        String sortingOrder = CallLog.Calls.DATE + " DESC ";
+
+        Cursor cursorCallLog = contentResolver.query(uri, columnsNumber, where, selectionArgs, sortingOrder);
+
+
+        if (cursorCallLog != null) {
+            while (cursorCallLog.moveToNext()) {
+                info = new DialerInfo();
+
+                info.setNumber(
+                        cursorCallLog.getString(cursorCallLog.getColumnIndex(CallLog.Calls.NUMBER)));
+
+                infos.add(info);
+            }
+            cursorCallLog.close();
         }
+    }
+
+
+    private void getFromContacts(String query) throws SecurityException {
+
+        ContentResolver contentResolver = getContentResolver();
+        DialerInfo info;
+
+        Uri uriNumber = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+
+
+        String[] columnsNumbers = {
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER,
+        };
+
+
+        String whereNumber = ContactsContract.CommonDataKinds.Phone.IN_VISIBLE_GROUP + " ='1'" +
+                " AND " +
+                ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + " = '1'" + " AND " +
+                ContactsContract.CommonDataKinds.Phone.NUMBER + " GLOB ?";
+
+
+        String[] selectionArgsNumber = {"*" + query + "*"};
+
+
+        String sortingOrderNumber = ContactsContract.CommonDataKinds.Phone.TIMES_CONTACTED + " DESC ";
+
+
+        Cursor cursorContacts = contentResolver.query(uriNumber, columnsNumbers, whereNumber,
+                selectionArgsNumber, sortingOrderNumber);
+
+
+        if (cursorContacts != null) {
+            while (cursorContacts.moveToNext()) {
+                info = new DialerInfo();
+
+                info.setName(
+                        cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
+                info.setNumber(
+                        cursorContacts.getString(cursorContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+
+                infos.add(info);
+
+
+            }
+            cursorContacts.close();
+
+        }
+    }
+
+    public void updateInfo() {
+
+        getInfo(editText.getText().toString());
+
+        if (editText.getText().toString().equals("")) {
+            headingView.setVisibility(View.VISIBLE);
+        } else {
+            headingView.setVisibility(View.GONE);
+        }
+
         adapter.updateInfos(infos);
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateInfo();
 
     }
 

@@ -1,8 +1,5 @@
 package com.example.varma.contacts.Objects;
 
-/**
- * Created by Varma on 4/7/2017.
- */
 
 public class DialerInfo {
     private String name, number;

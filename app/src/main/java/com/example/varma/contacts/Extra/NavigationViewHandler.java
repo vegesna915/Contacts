@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.varma.contacts.AboutActivity;
 import com.example.varma.contacts.Database.FriendsDb;
 import com.example.varma.contacts.Database.RequestsDb;
 import com.example.varma.contacts.HomeActivity;
@@ -94,6 +95,10 @@ public class NavigationViewHandler implements NavigationView.OnNavigationItemSel
                 break;
             }
             case R.id.nav_about: {
+
+                Intent toAboutActivity = new Intent(activity, AboutActivity.class);
+                activity.startActivity(toAboutActivity);
+
                 break;
             }
             case R.id.nav_share: {

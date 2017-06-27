@@ -119,7 +119,7 @@ public class RequestsDb {
 
     }
 
-    public ArrayList<Request> getPendingSendRequests() {
+    public ArrayList<Request> getSendRequests() {
         ArrayList<Request> requests = new ArrayList<>();
         Request request;
 
@@ -130,9 +130,8 @@ public class RequestsDb {
 
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_REQUESTS + " WHERE " +
-                REQUEST_SENDER_ID + " = ? AND " +
-                REQUEST_IS_PENDING + " = ?;";
-        String[] selectArgs = {_ID, "1"};
+                REQUEST_SENDER_ID + " = ?;";
+        String[] selectArgs = {_ID};
 
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -160,7 +159,7 @@ public class RequestsDb {
         return requests;
     }
 
-    public ArrayList<Request> getPendingReceivedRequests() {
+    public ArrayList<Request> getReceivedRequests() {
         ArrayList<Request> requests = new ArrayList<>();
         Request request;
 
@@ -171,8 +170,7 @@ public class RequestsDb {
 
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_REQUESTS + " WHERE " +
-                REQUEST_RECEIVER_ID + " = ? AND " +
-                REQUEST_IS_PENDING + " = '1';";
+                REQUEST_RECEIVER_ID + " = ? ;";
 
         String[] selectArgs = {_ID};
 
@@ -220,6 +218,8 @@ public class RequestsDb {
 
     // Deleting single contact
     public void deleteRequest(String _ID) {
+
+
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         db.delete(TABLE_REQUESTS, REQUEST_ID + " = ?",
@@ -232,6 +232,44 @@ public class RequestsDb {
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
 
         db.delete(TABLE_REQUESTS, null, null);
+
+
+    }
+
+    public void deleteNonPendingReceivedRequests() {
+
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+
+        String _ID = sharedPref.getString(context.getString(R.string.userDatabaseId), "");
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        String where = REQUEST_IS_PENDING + " = ? AND " +
+                REQUEST_RECEIVER_ID + " = ? ;";
+
+        String[] args = {"0", _ID};
+
+        db.delete(TABLE_REQUESTS, where, args);
+    }
+
+    public void deleteNonPendingSendRequests() {
+
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
+
+        String _ID = sharedPref.getString(context.getString(R.string.userDatabaseId), "");
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        String where = REQUEST_IS_PENDING + " = ? AND " +
+                REQUEST_SENDER_ID + " = ? ;";
+
+        String[] args = {"0", _ID};
+
+        db.delete(TABLE_REQUESTS, where, args);
     }
 
     public void requestAccepted(String REQUEST_ID) {

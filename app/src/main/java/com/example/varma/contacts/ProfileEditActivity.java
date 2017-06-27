@@ -25,7 +25,6 @@ import com.example.varma.contacts.AsyncTasks.NewUserData;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.example.varma.contacts.service.SaveProfileEditDataJobService;
-import com.example.varma.contacts.service.UpdateProfileDataService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -197,20 +196,15 @@ public class ProfileEditActivity extends AppCompatActivity {
                 editor1.commit();
                 isNew = false;
             } else {
-                if (Utils.internetConnectionStatus(this)) {
-                    Intent startUpdateProfileDataService = new Intent(this, UpdateProfileDataService.class);
-                    startService(startUpdateProfileDataService);
-                } else {
-                    JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                    JobInfo jobInfo = new JobInfo.Builder(10, new ComponentName(this, SaveProfileEditDataJobService.class))
-                            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                            .build();
 
-                    jobScheduler.schedule(jobInfo);
+                JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                JobInfo jobInfo = new JobInfo.Builder(10, new ComponentName(this, SaveProfileEditDataJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .build();
 
-                }
+                jobScheduler.schedule(jobInfo);
+
             }
-
 
             onBackPressed();
         }

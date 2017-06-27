@@ -51,7 +51,7 @@ public class SaveProfileEditDataJobService extends JobService {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            boolean jobReschedule;
+            boolean jobReschedule = true;
             try {
 
                 SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.loginDetails), Context.MODE_PRIVATE);
@@ -71,8 +71,12 @@ public class SaveProfileEditDataJobService extends JobService {
                 JSONObject json = WebServiceConnection.getData(urlString, parameters);
 
 
-                String result = json.getString("updateComplete");
-                jobReschedule = !(result.equals("1"));
+                if (json != null) {
+                    String result = json.getString("updateComplete");
+                    jobReschedule = !(result.equals("1"));
+                }
+
+
 
             } catch (Exception e) {
                 jobReschedule = true;

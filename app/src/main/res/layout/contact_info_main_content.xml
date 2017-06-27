@@ -66,6 +66,15 @@
 
         <include layout="@layout/layout_divider_horizontal" />
 
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewBanner_contactInfoActivity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-9209652117468350/5906347825" />
+
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView_ContactInfo"
             android:layout_width="match_parent"

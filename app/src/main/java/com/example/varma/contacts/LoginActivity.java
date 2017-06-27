@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.example.varma.contacts.AsyncTasks.IsNewUser;
 import com.example.varma.contacts.AsyncTasks.LogingIn;
 import com.example.varma.contacts.Extra.Utils;
-import com.example.varma.contacts.Extra.WebServiceConnection;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -33,8 +32,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -105,20 +102,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressBar(true);
+
 
                 if (Utils.internetConnectionStatus(LoginActivity.this)) {
-                    CheckConnection checkConnection = new CheckConnection();
-                    checkConnection.execute((Void) null);
+                    googleLogIn();
                 } else {
-                    progressBar(false);
+
                     Toast.makeText(context, " Unable to Access Network ", Toast.LENGTH_SHORT).show();
                 }
 
-
             }
         });
-
 
     }
 
@@ -169,7 +163,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        progressBar(false);
         Toast.makeText(context, " Connection Failed ", Toast.LENGTH_SHORT).show();
     }
 
@@ -185,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 GoogleSignInAccount account = result.getSignInAccount();
                 if (account == null) {
                     Toast.makeText(this, "Google SignIn Failed ", Toast.LENGTH_SHORT).show();
-                    progressBar(false);
+                    //progressBar(false);
                     return;
                 }
                 String name = account.getDisplayName();
@@ -217,6 +210,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                 signOut();
 
+
                 IsNewUser isNewUser = new IsNewUser(LoginActivity.this, Id);
                 isNewUser.execute((Void) null);
 
@@ -226,16 +220,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
 
         }
-        progressBar(false);
+        //progressBar(false);
 
     }
 
-    void progressBar(boolean visible) {
+    public void progressBar(boolean visible) {
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar_login);
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView_login);
         SignInButton googleSignIn = (SignInButton) findViewById(R.id.googleSignIn_login);
 
+        Log.i("signin", "12");
         if (visible) {
             progressBar.setVisibility(View.VISIBLE);
 
@@ -270,7 +265,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
 
-    private class CheckConnection extends AsyncTask<Void, Void, JSONObject> {
+    /*private class CheckConnection extends AsyncTask<Void, Void, JSONObject> {
 
 
         @Override
@@ -311,7 +306,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
 
         }
-    }
+    }*/
 
 
 }

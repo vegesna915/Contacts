@@ -66,7 +66,10 @@ public class UnFriendJobService extends JobService {
             JSONObject json = WebServiceConnection.getData(url, parameters);
 
             try {
-                jobDone = json.getString("JOB_DONE").equals("1");
+                if (json != null) {
+                    jobDone = json.getString("JOB_DONE").equals("1");
+
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

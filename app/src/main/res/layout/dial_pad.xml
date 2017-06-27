@@ -6,14 +6,16 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:background="#fff"
-    android:elevation="5dp"
-    android:padding="5dp">
+    android:elevation="20dp"
+    android:padding="5dp"
+    tools:ignore="HardcodedText">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,8 +28,9 @@
                 android:layout_alignParentStart="true"
                 android:background="@null"
                 android:clickable="true"
+                android:contentDescription="Dial Pad Down"
                 android:padding="10dp"
-                android:src="@drawable/ic_down_purpile" />
+                android:src="@drawable/ic_keyboard_arrow_down" />
 
             <EditText
                 android:id="@+id/editText_dialPad"
@@ -40,11 +43,11 @@
                 android:cursorVisible="false"
                 android:gravity="center"
                 android:hint="Enter Phone Number"
+                android:inputType="number"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/default_gap"
                 android:paddingStart="@dimen/default_gap"
                 android:textColor="@color/colorPrimaryLight"
-                android:textColorHint="@color/colorPrimaryLight"
                 android:textSize="24sp" />
 
             <ImageButton
@@ -53,8 +56,9 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:background="@null"
+                android:contentDescription="backspace"
                 android:padding="10dp"
-                android:src="@drawable/ic_back_purpile" />
+                android:src="@drawable/ic_backspace" />
 
         </RelativeLayout>
 

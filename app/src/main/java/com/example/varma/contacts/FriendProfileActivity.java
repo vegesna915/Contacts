@@ -34,6 +34,8 @@ import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.service.UnFriendJobService;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
@@ -48,6 +50,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     ArrayList<CallLogInfo> callLogs;
     RecyclerView recyclerView;
     RecyclerViewAdapterContactInfo adapter;
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,14 @@ public class FriendProfileActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
 
+        getAd();
+
+    }
+
+    private void getAd() {
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build();
+        adView.loadAd(adRequest);
     }
 
     void declarations() {
@@ -96,7 +107,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         emailLayout = findViewById(R.id.layout_emailHome);
         recyclerView = (RecyclerView) findViewById(R.id.friendCallLog);
         userIdView = (TextView) findViewById(R.id.userIdView_friend);
-
+        adView = (AdView) findViewById(R.id.adViewBanner_friendProfile);
     }
 
     void assignValues() {
@@ -109,6 +120,8 @@ public class FriendProfileActivity extends AppCompatActivity {
         if (!friend.getIMAGE_URL().equals("") && Utils.internetConnectionStatus(this)) {
             Glide.with(this).load(friend.getIMAGE_URL()).dontAnimate().into(circularImageView);
         }
+
+
     }
 
     void listeners() {

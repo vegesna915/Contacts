@@ -1,5 +1,6 @@
 package com.example.varma.contacts.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,18 +11,17 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Objects.Request;
 import com.example.varma.contacts.R;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
-
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class RecyclerViewAdapterSendRequest extends RecyclerView.Adapter<RecyclerViewAdapterSendRequest.MyViewHolder> {
 
     private Context context;
-    private ArrayList<Request> requests = new ArrayList<>();
+    private ArrayList<Request> requests;
 
     public RecyclerViewAdapterSendRequest(ArrayList<Request> requests) {
-        this.requests.addAll(requests);
+        this.requests = requests;
     }
 
     @Override
@@ -33,6 +33,7 @@ public class RecyclerViewAdapterSendRequest extends RecyclerView.Adapter<Recycle
         return new MyViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
@@ -43,6 +44,16 @@ public class RecyclerViewAdapterSendRequest extends RecyclerView.Adapter<Recycle
             Glide.with(context).load(request.getIMAGE_URL()).dontAnimate().into(holder.circleImageView);
         } else {
             holder.circleImageView.setImageResource(R.drawable.ic_account_circle);
+        }
+
+        if (request.getIS_PENDING().equals("1")) {
+            holder.textView.setText("waiting for response");
+        } else {
+            if (request.getIS_ACCEPTED().equals("1")) {
+                holder.textView.setText("Request Accepted");
+            } else {
+                holder.textView.setText("Request Rejected");
+            }
         }
 
 

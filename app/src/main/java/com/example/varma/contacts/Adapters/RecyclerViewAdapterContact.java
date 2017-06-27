@@ -1,5 +1,6 @@
 package com.example.varma.contacts.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -39,7 +40,7 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
 
         holder.contactNameView.setText(contacts.get(position).getContactName());
