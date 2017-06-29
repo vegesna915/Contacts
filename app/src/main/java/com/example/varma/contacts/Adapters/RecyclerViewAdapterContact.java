@@ -9,9 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.varma.contacts.ContactInfoActivity;
 import com.example.varma.contacts.Extra.Utils;
+import com.example.varma.contacts.HomeActivity;
+import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment2;
 import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.R;
 
@@ -23,10 +26,26 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
     private ArrayList<Contact> contacts = new ArrayList<>();
     private Context context;
     private int color;
+    private HomeActivity homeActivity;
+    private int longClickPosition;
 
-    public RecyclerViewAdapterContact(ArrayList<Contact> contacts) {
+    public RecyclerViewAdapterContact(ArrayList<Contact> contacts, HomeActivity homeActivity) {
         this.copyContacts.addAll(contacts);
         this.contacts.addAll(contacts);
+        this.homeActivity = homeActivity;
+
+        homeActivity.setAdapterInterface_homeFragment2(new AdapterInterface_HomeFragment2() {
+            @Override
+            public void passMenuItem(int menuItemId) {
+
+                onClickContextMenu(menuItemId);
+            }
+
+            @Override
+            public void callFilterContacts(String query) {
+                filterContacts(query);
+            }
+        });
 
     }
 
@@ -93,6 +112,19 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
         });
 
 
+        holder.viewContact.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                longClickPosition = position;
+
+                homeActivity.contextMenu(v, 1);
+
+                return true;
+            }
+        });
+
+
     }
 
     @Override
@@ -100,7 +132,7 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
         return contacts.size();
     }
 
-    public void filterContacts(String query) {
+    private void filterContacts(String query) {
 
 
         contacts.clear();
@@ -135,6 +167,37 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
+    private void onClickContextMenu(int menuItemId) {
+
+
+        Contact contact = contacts.get(longClickPosition);
+        Toast.makeText(homeActivity, "Long Clicked on " + contact.getContactName(), Toast.LENGTH_SHORT).show();
+        switch (menuItemId) {
+
+            case 0: {
+
+                break;
+            }
+            case 1: {
+
+                break;
+            }
+
+            case 2: {
+
+                break;
+            }
+            case 3: {
+
+                break;
+            }
+            default: {
+
+                break;
+            }
+        }
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView contactNameView, contactNumberView, contactProfileIconView, textDivider;
@@ -149,8 +212,9 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
             contactProfileIconView = (TextView) itemView.findViewById(R.id.profileIcon_contact_fragment2);
             textDivider = (TextView) itemView.findViewById(R.id.textDivider_contact);
             viewContact = itemView.findViewById(R.id.contact);
-
         }
+
     }
+
 
 }

@@ -8,10 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.FriendProfileActivity;
+import com.example.varma.contacts.HomeActivity;
+import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment3;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.R;
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -23,10 +26,18 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
     private ArrayList<Friend> friends = new ArrayList<>();
     private Context context;
-    private int color;
+    private int color, longClickPosition;
+    private HomeActivity homeActivity;
 
-    public RecyclerViewAdapterFriends(ArrayList<Friend> friends) {
+    public RecyclerViewAdapterFriends(ArrayList<Friend> friends, final HomeActivity homeActivity) {
         this.friends.addAll(friends);
+        this.homeActivity = homeActivity;
+        this.homeActivity.setAdapterInterface_homeFragment3(new AdapterInterface_HomeFragment3() {
+            @Override
+            public void passMenuItem(int menuItemId) {
+                onClickContextMenu(menuItemId);
+            }
+        });
     }
 
     @Override
@@ -39,7 +50,7 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position1) {
+    public void onBindViewHolder(final MyViewHolder holder, int position1) {
         final int position = position1;
         holder.contactNameView.setText(friends.get(position).get_NAME());
         holder.contactNumberView.setText(friends.get(position).get_NUMBER());
@@ -98,6 +109,17 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
             }
         });
 
+        holder.viewContact.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                longClickPosition = position;
+                homeActivity.contextMenu(v, 2);
+
+                return true;
+            }
+        });
+
     }
 
     @Override
@@ -109,6 +131,37 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
         this.friends.clear();
         this.friends.addAll(friends);
         notifyDataSetChanged();
+    }
+
+    private void onClickContextMenu(int menuItemId) {
+
+
+        Friend friend = friends.get(longClickPosition);
+        Toast.makeText(homeActivity, "Long Clicked on " + friend.get_NUMBER(), Toast.LENGTH_SHORT).show();
+        switch (menuItemId) {
+
+            case 0: {
+
+                break;
+            }
+            case 1: {
+
+                break;
+            }
+
+            case 2: {
+
+                break;
+            }
+            case 3: {
+
+                break;
+            }
+            default: {
+
+                break;
+            }
+        }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -130,5 +183,4 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
         }
     }
-
 }

@@ -25,6 +25,7 @@ import com.example.varma.contacts.Adapters.RecyclerViewAdapterCallLog;
 import com.example.varma.contacts.Database.FriendsDb;
 import com.example.varma.contacts.Extra.PermissionsClass;
 import com.example.varma.contacts.Extra.Utils;
+import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.Objects.Friend;
@@ -90,7 +91,7 @@ public class HomeFragment_1 extends Fragment {
         //getCallLog();
 
 
-        adapter = new RecyclerViewAdapterCallLog(callLogs);
+        adapter = new RecyclerViewAdapterCallLog(callLogs, (HomeActivity) getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);

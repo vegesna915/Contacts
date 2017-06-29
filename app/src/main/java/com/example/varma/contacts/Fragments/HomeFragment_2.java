@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterContact;
 import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.Objects.Contact;
 import com.example.varma.contacts.R;
 
@@ -31,8 +32,8 @@ public class HomeFragment_2 extends Fragment {
 
 
     public RecyclerView recyclerView;
-
     public RecyclerViewAdapterContact adapter;
+    HomeActivity homeActivity;
     private Context context;
     private ArrayList<Contact> contacts = new ArrayList<>();
     private TextView noPermissionTextView;
@@ -43,6 +44,9 @@ public class HomeFragment_2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         context = inflater.getContext();
+
+        homeActivity = (HomeActivity) getActivity();
+
         isFirstResume = true;
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_home_2, container, false);
 
@@ -51,6 +55,7 @@ public class HomeFragment_2 extends Fragment {
 
 
         getContacts();
+
         return linearLayout;
     }
 
@@ -80,7 +85,7 @@ public class HomeFragment_2 extends Fragment {
 
 
         //getContacts();
-        adapter = new RecyclerViewAdapterContact(contacts);
+        adapter = new RecyclerViewAdapterContact(contacts, homeActivity);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);

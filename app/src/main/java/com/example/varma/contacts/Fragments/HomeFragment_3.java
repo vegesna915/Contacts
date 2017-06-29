@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterFriends;
 import com.example.varma.contacts.Database.FriendsDb;
+import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.R;
 
@@ -85,7 +86,7 @@ public class HomeFragment_3 extends Fragment {
 
     private void setRecyclerView() {
 
-        adapter = new RecyclerViewAdapterFriends(friends);
+        adapter = new RecyclerViewAdapterFriends(friends, (HomeActivity) getActivity());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
 
         recyclerView.setLayoutManager(linearLayoutManager);

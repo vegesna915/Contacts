@@ -1,7 +1,6 @@
 package com.example.varma.contacts.Adapters;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -14,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.varma.contacts.ContactInfoActivity;
 import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.HomeActivity;
+import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment1;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.R;
 
@@ -27,25 +29,32 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
 
     private ArrayList<CallLogInfo> callLogs = new ArrayList<>();
-    private ArrayList<CallLogInfo> copyCallLogs = new ArrayList<>();
     private Context context;
-    private Activity activity;
+    private HomeActivity homeActivity;
+    private int longClickPosition;
 
-    public RecyclerViewAdapterCallLog(ArrayList<CallLogInfo> callLogs) {
+    public RecyclerViewAdapterCallLog(ArrayList<CallLogInfo> callLogs, HomeActivity homeActivity) {
         this.callLogs.addAll(callLogs);
-        this.copyCallLogs.addAll(callLogs);
+        this.homeActivity = homeActivity;
+
+        homeActivity.setAdapterInterface_homeFragment1(new AdapterInterface_HomeFragment1() {
+            @Override
+            public void passMenuItem(int menuItemId) {
+                onClickContextMenu(menuItemId);
+            }
+        });
+
     }
 
     @Override
     public MyViewHolderCallLog onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        activity = (Activity) context;
         View view = LayoutInflater.from(context).inflate(R.layout.call_log_holder, parent, false);
         return new MyViewHolderCallLog(view);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolderCallLog holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(final MyViewHolderCallLog holder, @SuppressLint("RecyclerView") final int position) {
 
         String callerName = callLogs.get(position).getCallerName();
 
@@ -100,7 +109,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
 
                 } else {
-                    PermissionsClass.requestPermission(activity,
+                    PermissionsClass.requestPermission(homeActivity,
                             new String[]{PermissionsClass.CallPhone}, 701);
                 }
             }
@@ -122,6 +131,17 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
 
                 context.startActivity(toContactInfoActivity);
+            }
+        });
+
+        holder.callDetailsLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                longClickPosition = position;
+                homeActivity.contextMenu(v, 0);
+
+                return true;
             }
         });
 
@@ -195,6 +215,37 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
     }
 
+    private void onClickContextMenu(int menuItemId) {
+
+
+        CallLogInfo info = callLogs.get(longClickPosition);
+        Toast.makeText(homeActivity, "Long Clicked on " + info.getCallernumber(), Toast.LENGTH_SHORT).show();
+        switch (menuItemId) {
+
+            case 0: {
+
+                break;
+            }
+            case 1: {
+
+                break;
+            }
+
+            case 2: {
+
+                break;
+            }
+            case 3: {
+
+                break;
+            }
+            default: {
+
+                break;
+            }
+        }
+    }
+
     class MyViewHolderCallLog extends RecyclerView.ViewHolder {
 
         TextView callerNameView, callerNumberView, callDate, callTime, copyCalls;
@@ -218,6 +269,4 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
             copyCalls = (TextView) view.findViewById(R.id.copyCalls_callLog);
         }
     }
-
-
 }

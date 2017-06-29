@@ -121,7 +121,6 @@ public class FriendProfileActivity extends AppCompatActivity {
             Glide.with(this).load(friend.getIMAGE_URL()).dontAnimate().into(circularImageView);
         }
 
-
     }
 
     void listeners() {

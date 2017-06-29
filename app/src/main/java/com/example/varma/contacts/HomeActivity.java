@@ -21,6 +21,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,9 @@ import com.example.varma.contacts.Fragments.HomeFragment_1;
 import com.example.varma.contacts.Fragments.HomeFragment_2;
 import com.example.varma.contacts.Fragments.HomeFragment_3;
 import com.example.varma.contacts.Fragments.HomeFragment_3_notLogedIn;
+import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment1;
+import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment2;
+import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment3;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
@@ -48,10 +52,6 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     FloatingActionButton fab;
     SharedPreferences sharedPref;
     List<Fragment> fragments;
-    HomeFragment_1 homeFragment1;
-    HomeFragment_2 homeFragment2;
-    HomeFragment_3 homeFragment3;
-    HomeFragment_3_notLogedIn homeFragment_3_notLogedIn;
     MenuItem menuItem;
     SearchView searchView;
     int page;
@@ -59,10 +59,13 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     FragmentAdapter_Home fragmentAdapter;
     List<String> tabTitles;
     NavigationView navigationView;
+    int contextMenuId;
+    AdapterInterface_HomeFragment1 adapterInterface_homeFragment1;
+    AdapterInterface_HomeFragment2 adapterInterface_homeFragment2;
+    AdapterInterface_HomeFragment3 adapterInterface_homeFragment3;
     private DrawerLayout drawerLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,10 +104,6 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         tabTitles = new ArrayList<>();
         viewPager = (ViewPager) findViewById(R.id.viewpager_home);
         fab = (FloatingActionButton) findViewById(R.id.floatingActionButton_home);
-        homeFragment1 = new HomeFragment_1();
-        homeFragment2 = new HomeFragment_2();
-        homeFragment3 = new HomeFragment_3();
-        homeFragment_3_notLogedIn = new HomeFragment_3_notLogedIn();
         fragments = new ArrayList<>();
         navigationView = (NavigationView) findViewById(R.id.navViewHome);
 
@@ -137,13 +136,13 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     void viewPager() {
-        fragments.add(homeFragment1);
-        fragments.add(homeFragment2);
+        fragments.add(new HomeFragment_1());
+        fragments.add(new HomeFragment_2());
 
         if (isLogin) {
-            fragments.add(homeFragment3);
+            fragments.add(new HomeFragment_3());
         } else {
-            fragments.add(homeFragment_3_notLogedIn);
+            fragments.add(new HomeFragment_3_notLogedIn());
         }
 
 
@@ -153,6 +152,8 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         viewPager.setAdapter(fragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(page);
+
+        registerForContextMenu(viewPager);
 
     }
 
@@ -167,27 +168,11 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onPageSelected(int position) {
 
                 if (!searchView.isIconified()) {
-                    homeFragment2.adapter.filterContacts("");
+                    HomeActivity.this.adapterInterface_homeFragment2.callFilterContacts("");
                     searchView.setIconified(true);
                 }
 
-                switch (position) {
-                    case 0: {
-                        fab.setImageResource(R.drawable.ic_dialpad);
-                        searchView.setVisibility(View.GONE);
-                        break;
-                    }
-                    case 1: {
-                        searchView.setVisibility(View.VISIBLE);
-                        fab.setImageResource(R.drawable.ic_person_add);
-                        break;
-                    }
-                    case 2: {
-                        searchView.setVisibility(View.GONE);
-                        fab.setImageResource(R.drawable.ic_person_add);
-
-                    }
-                }
+                setFabIcon(position);
 
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(tabTitles.get(position));
@@ -200,6 +185,26 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
 
             }
         });
+    }
+
+    void setFabIcon(int position) {
+        switch (position) {
+            case 0: {
+                fab.setImageResource(R.drawable.ic_dialpad);
+                searchView.setVisibility(View.GONE);
+                break;
+            }
+            case 1: {
+                searchView.setVisibility(View.VISIBLE);
+                fab.setImageResource(R.drawable.ic_person_add);
+                break;
+            }
+            case 2: {
+                searchView.setVisibility(View.GONE);
+                fab.setImageResource(R.drawable.ic_person_add);
+
+            }
+        }
     }
 
     void setFabClickListener() {
@@ -340,7 +345,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
                 break;
             }
             case 1: {
-                homeFragment2.adapter.filterContacts(newText);
+                HomeActivity.this.adapterInterface_homeFragment2.callFilterContacts(newText);
 
                 break;
             }
@@ -375,13 +380,13 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onResume();
 
         if (!isFirstResume) {
-
+            setFabIcon(viewPager.getCurrentItem());
             if (isLogin != sharedPref.getBoolean(getString(R.string.loginStatus), false)) {
                 isLogin = sharedPref.getBoolean(getString(R.string.loginStatus), false);
 
                 if (isLogin) {
                     fragments.remove(2);
-                    fragments.add(2, homeFragment3);
+                    fragments.add(2, new HomeFragment_3());
                 } else {
                     fragmentAdapter.changeFragment3(new HomeFragment_3_notLogedIn());
                 }
@@ -389,6 +394,7 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
             }
 
         }
+
     }
 
     @Override
@@ -426,4 +432,85 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
+    public void contextMenu(View view, int contextMenuId) {
+        this.contextMenuId = contextMenuId;
+        openContextMenu(view);
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.setHeaderTitle("Select Option");
+
+        switch (contextMenuId) {
+
+            case 0: {
+                menu.add(Menu.NONE, 0, Menu.NONE, "Call");
+                menu.add(Menu.NONE, 1, Menu.NONE, "Message");
+                menu.add(Menu.NONE, 2, Menu.NONE, "Copy Number");
+                menu.add(Menu.NONE, 3, Menu.NONE, "Edit Before Call");
+                break;
+            }
+
+            case 1: {
+                menu.add(Menu.NONE, 0, Menu.NONE, "Call");
+                menu.add(Menu.NONE, 1, Menu.NONE, "Message");
+                menu.add(Menu.NONE, 2, Menu.NONE, "Copy Number");
+                menu.add(Menu.NONE, 3, Menu.NONE, "Edit Contact");
+                break;
+            }
+            case 2: {
+                menu.add(Menu.NONE, 0, Menu.NONE, "Call");
+                menu.add(Menu.NONE, 1, Menu.NONE, "Message");
+                menu.add(Menu.NONE, 2, Menu.NONE, "Copy Number");
+                menu.add(Menu.NONE, 3, Menu.NONE, "Unfriend");
+                break;
+            }
+            default: {
+
+            }
+        }
+
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (contextMenuId) {
+
+            case 0: {
+                this.adapterInterface_homeFragment1.passMenuItem(item.getItemId());
+                break;
+            }
+
+            case 1: {
+                this.adapterInterface_homeFragment2.passMenuItem(item.getItemId());
+                break;
+            }
+            case 2: {
+                this.adapterInterface_homeFragment3.passMenuItem(item.getItemId());
+                break;
+            }
+            default: {
+
+            }
+        }
+
+
+        return super.onContextItemSelected(item);
+    }
+
+    public void setAdapterInterface_homeFragment1(AdapterInterface_HomeFragment1 aihf1) {
+        this.adapterInterface_homeFragment1 = aihf1;
+    }
+
+    public void setAdapterInterface_homeFragment2(AdapterInterface_HomeFragment2 aihf2) {
+        this.adapterInterface_homeFragment2 = aihf2;
+    }
+
+    public void setAdapterInterface_homeFragment3(AdapterInterface_HomeFragment3 aihf3) {
+        this.adapterInterface_homeFragment3 = aihf3;
+    }
 }
