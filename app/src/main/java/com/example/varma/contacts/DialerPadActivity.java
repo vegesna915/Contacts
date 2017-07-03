@@ -1,8 +1,6 @@
 package com.example.varma.contacts;
 
 import android.content.ContentResolver;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,11 +19,10 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterDialPad;
 import com.example.varma.contacts.Database.FriendsDb;
-import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.Extra.Caller;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.DialerInfo;
 
@@ -33,6 +30,7 @@ import java.util.ArrayList;
 
 public class DialerPadActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    public static String numberIntentExtra = "numberFromIntent";
     String dialPadInput = "";
     TextView headingView;
     EditText editText;
@@ -43,11 +41,16 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
     RecyclerViewAdapterDialPad adapter;
     ArrayList<DialerInfo> infos = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialer_pad);
+
+        String numberFromIntent = getIntent().getStringExtra(numberIntentExtra);
+
+        if (numberFromIntent == null) {
+            numberFromIntent = "";
+        }
 
         final View divider = findViewById(R.id.divider_dialPad);
 
@@ -55,6 +58,8 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
 
         editText = (EditText) findViewById(R.id.editText_dialPad);
         editText.setTextIsSelectable(true);
+        editText.setText(numberFromIntent);
+        cursorVisible();
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,25 +100,11 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (PermissionsClass.hasPermissionCallPhone(DialerPadActivity.this)) {
-
-                    String number = editText.getText().toString().trim();
-                    number = number.replace("#", Uri.encode("#"));
-                    number = "tel:" + number;
-
-                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                    try {
-                        startActivity(callIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
+                String number = editText.getText().toString().trim();
+                number = number.replace("#", Uri.encode("#"));
 
 
-                } else {
-                    PermissionsClass.requestPermission(DialerPadActivity.this,
-                            new String[]{PermissionsClass.CallPhone}, 501);
-                }
+                Caller.callNumber(DialerPadActivity.this, number);
 
             }
         });
@@ -266,23 +257,12 @@ public class DialerPadActivity extends AppCompatActivity implements AdapterView.
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if (requestCode == 501) {
+        if (requestCode == 701) {
             if (grantResults.length > 0) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                String number = editText.getText().toString().trim();
+                number = "tel:" + number;
 
-                    String number = editText.getText().toString().trim();
-                    number = "tel:" + number;
-
-                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                    try {
-                        startActivity(callIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    Toast.makeText(this, "Grant Permission to Call", Toast.LENGTH_SHORT).show();
-                }
+                Caller.callNumber(DialerPadActivity.this, number);
             }
         }
 

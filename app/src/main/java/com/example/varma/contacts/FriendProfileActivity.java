@@ -1,6 +1,5 @@
 package com.example.varma.contacts;
 
-import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -20,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterContactInfo;
 import com.example.varma.contacts.Database.FriendsDb;
-import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.Extra.Caller;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.CallLogInfo;
 import com.example.varma.contacts.Objects.Friend;
@@ -51,6 +51,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerViewAdapterContactInfo adapter;
     AdView adView;
+    String onLongClickedOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,27 +125,23 @@ public class FriendProfileActivity extends AppCompatActivity {
     }
 
     void listeners() {
+        registerForContextMenu(numberLayout);
+        registerForContextMenu(emailLayout);
         numberLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (PermissionsClass.hasPermissionCallPhone(context)) {
+                Caller.callNumber(FriendProfileActivity.this, friend.get_NUMBER());
+            }
+        });
 
-                    String number = friend.get_NUMBER();
-                    number = "tel:" + number;
+        numberLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onLongClickedOn = "number1";
+                openContextMenu(v);
 
-                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                    try {
-                        context.startActivity(callIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } else {
-                    PermissionsClass.requestPermission((Activity) context,
-                            new String[]{PermissionsClass.CallPhone}, 1001);
-                }
+                return true;
             }
         });
 
@@ -152,28 +149,78 @@ public class FriendProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-                emailIntent.setData(Uri.parse("mailto:"));
-                emailIntent.setType("message/rfc822");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{friend.get_EMAIL()});
-
-                try {
-                    startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-                    finish();
-
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(FriendProfileActivity.this, "There is no Email Sending App Installed.", Toast.LENGTH_SHORT).show();
-                }
+                sendEmail();
 
             }
         });
 
+
+        emailLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+
+                onLongClickedOn = "email1";
+                openContextMenu(v);
+
+                return true;
+            }
+        });
+    }
+
+
+    private void sendEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("message/rfc822");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{friend.get_EMAIL()});
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(FriendProfileActivity.this, "There is no Email Sending App Installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void unFriend() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(FriendProfileActivity.this);
+        builder.setCancelable(true)
+                .setTitle("Unfriend")
+                .setMessage("Do you want to unfriend " + friend.get_NAME() + "?")
+                .setPositiveButton("unfriend", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PersistableBundle bundle = new PersistableBundle();
+                        bundle.putString(UnFriendJobService.INPUT_FRIEND_ID, friend.get_ID());
+
+                        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+
+                        int jobId = Integer.parseInt(friend.get_ID());
+                        JobInfo jobInfo = new JobInfo.Builder(jobId, new ComponentName(FriendProfileActivity.this, UnFriendJobService.class))
+                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                                .setExtras(bundle)
+                                .build();
+
+                        jobScheduler.schedule(jobInfo);
+                        FriendsDb friendDb = new FriendsDb(FriendProfileActivity.this);
+                        friendDb.unFriend(friend.get_ID());
+                        finish();
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .create().show();
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case 1001: {
+            case 701: {
                 if (grantResults.length > 0) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -275,37 +322,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
 
             case R.id.unFriendMenuItem: {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FriendProfileActivity.this);
-                builder.setCancelable(true)
-                        .setTitle("Unfriend")
-                        .setMessage("Are you sure you want to unfriend " + friend.get_NAME() + "?")
-                        .setPositiveButton("unfriend", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                PersistableBundle bundle = new PersistableBundle();
-                                bundle.putString(UnFriendJobService.INPUT_FRIEND_ID, friend.get_ID());
-
-                                JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-
-                                int jobId = Integer.parseInt(friend.get_ID());
-                                JobInfo jobInfo = new JobInfo.Builder(jobId, new ComponentName(FriendProfileActivity.this, UnFriendJobService.class))
-                                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-                                        .setExtras(bundle)
-                                        .build();
-
-                                jobScheduler.schedule(jobInfo);
-                                FriendsDb friendDb = new FriendsDb(FriendProfileActivity.this);
-                                friendDb.unFriend(friend.get_ID());
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .create().show();
+                unFriend();
 
                 return true;
             }
@@ -314,5 +331,76 @@ public class FriendProfileActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(menuItem);
             }
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.setHeaderTitle("Select option");
+
+        switch (onLongClickedOn) {
+
+            case "number1": {
+                menu.add(Menu.NONE, 0, Menu.NONE, "Call");
+                menu.add(Menu.NONE, 1, Menu.NONE, "Message");
+                menu.add(Menu.NONE, 2, Menu.NONE, "Copy");
+                menu.add(Menu.NONE, 3, Menu.NONE, "Unfriend");
+                break;
+            }
+
+            case "email1": {
+                menu.add(Menu.NONE, 4, Menu.NONE, "Send Email");
+                menu.add(Menu.NONE, 5, Menu.NONE, "Copy Email");
+                menu.add(Menu.NONE, 3, Menu.NONE, "Unfriend");
+                break;
+            }
+
+            default: {
+
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+
+            case 0: {
+                Caller.callNumber(this, friend.get_NUMBER());
+                break;
+            }
+
+            case 1: {
+                Caller.smsNumber(FriendProfileActivity.this, friend.get_NUMBER());
+                break;
+            }
+            case 2: {
+                Utils.copyToClipBoard(this, friend.get_NUMBER());
+                break;
+            }
+            case 3: {
+                unFriend();
+                break;
+            }
+            case 4: {
+                sendEmail();
+                break;
+            }
+            case 5: {
+                Utils.copyToClipBoard(this, friend.get_EMAIL());
+                break;
+            }
+            default: {
+
+                break;
+            }
+
+        }
+
+        return super.onContextItemSelected(item);
     }
 }

@@ -413,7 +413,6 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (grantResults.length > 0) {
                     if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                         Toast.makeText(this, "Grant Permission to Call", Toast.LENGTH_SHORT).show();
-
                     }
                 }
                 break;
@@ -513,4 +512,6 @@ public class HomeActivity extends AppCompatActivity implements SearchView.OnQuer
     public void setAdapterInterface_homeFragment3(AdapterInterface_HomeFragment3 aihf3) {
         this.adapterInterface_homeFragment3 = aihf3;
     }
+
+
 }

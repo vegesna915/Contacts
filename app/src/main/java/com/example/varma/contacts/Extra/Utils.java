@@ -1,6 +1,8 @@
 package com.example.varma.contacts.Extra;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +21,8 @@ import java.util.regex.Pattern;
 
 
 public class Utils {
+
+    public static int num = 0;
 
 
     public static boolean isEmailValid(String email) {
@@ -220,7 +224,13 @@ public class Utils {
         } else {
             return color;
         }
+    }
 
+    public static void copyToClipBoard(Context context, String text) {
+
+        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData = ClipData.newPlainText("number", text);
+        clipboardManager.setPrimaryClip(clipData);
 
     }
 

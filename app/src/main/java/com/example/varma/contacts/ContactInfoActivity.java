@@ -15,12 +15,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.varma.contacts.Adapters.RecyclerViewAdapterContactInfo;
+import com.example.varma.contacts.Extra.Caller;
 import com.example.varma.contacts.Extra.PermissionsClass;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.Objects.CallLogInfo;
@@ -37,6 +41,7 @@ public class ContactInfoActivity extends AppCompatActivity {
     ArrayList<CallLogInfo> callLogs = new ArrayList<>();
     boolean isFirstResume;
     AdView adView;
+    View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,17 @@ public class ContactInfoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        view = findViewById(R.id.layout_numberContactInfoHome);
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                openContextMenu(v);
+
+                return true;
+            }
+        });
+        registerForContextMenu(view);
 
         TextView contactNumberView = (TextView) findViewById(R.id.contact_phoneNumberHome);
         contactNumberView.setText(contact.getContactNumber());
@@ -64,7 +80,7 @@ public class ContactInfoActivity extends AppCompatActivity {
         options.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 4/6/2017  
+                openContextMenu(view);
             }
         });
         //-----------------------------------------------------
@@ -84,23 +100,7 @@ public class ContactInfoActivity extends AppCompatActivity {
         fabCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (PermissionsClass.hasPermissionCallPhone(ContactInfoActivity.this)) {
-
-                    String number = contact.getContactNumber().trim();
-                    number = "tel:" + number;
-
-                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                    try {
-                        startActivity(callIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } else {
-                    PermissionsClass.requestPermission(ContactInfoActivity.this,
-                            new String[]{PermissionsClass.CallPhone}, 601);
-                }
+                Caller.callNumber(ContactInfoActivity.this, contact.getContactNumber());
             }
         });
 
@@ -110,11 +110,7 @@ public class ContactInfoActivity extends AppCompatActivity {
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toEditContact = new Intent(Intent.ACTION_EDIT);
-                Uri contentUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
-                        Long.parseLong(contact.getContactId()));
-                toEditContact.setData(contentUri);
-                startActivity(toEditContact);
+                editContact();
             }
         });
 
@@ -130,16 +126,20 @@ public class ContactInfoActivity extends AppCompatActivity {
             adView.setVisibility(View.GONE);
         }
 
+    }
 
-
-
-
+    private void editContact() {
+        Intent toEditContact = new Intent(Intent.ACTION_EDIT);
+        Uri contentUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                Long.parseLong(contact.getContactId()));
+        toEditContact.setData(contentUri);
+        startActivity(toEditContact);
     }
 
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        if (requestCode == 601) {
+        if (requestCode == 701) {
             if (grantResults.length > 0) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -237,5 +237,55 @@ public class ContactInfoActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         isFirstResume = false;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.setHeaderTitle("Select Option");
+
+        menu.add(Menu.NONE, 0, Menu.NONE, "Call");
+        menu.add(Menu.NONE, 1, Menu.NONE, "Message");
+        menu.add(Menu.NONE, 2, Menu.NONE, "Copy");
+        menu.add(Menu.NONE, 3, Menu.NONE, "Edit");
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case 0: {
+                Caller.callNumber(this, contact.getContactNumber());
+                break;
+            }
+
+            case 1: {
+                Caller.smsNumber(ContactInfoActivity.this, contact.getContactNumber());
+                break;
+            }
+
+            case 2: {
+                Utils.copyToClipBoard(ContactInfoActivity.this, contact.getContactNumber());
+                break;
+            }
+
+            case 3: {
+                editContact();
+                break;
+            }
+
+            default: {
+
+                break;
+            }
+
+        }
+
+
+        return super.onContextItemSelected(item);
+
     }
 }

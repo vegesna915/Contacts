@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,10 +44,6 @@ public class HomeFragment_3 extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_fragment3_home);
         textView = (TextView) view.findViewById(R.id.textView_fragment3_noFriends);
-        Log.i("lifecycle", "RecyclerView and TextView Initiated");
-
-
-        Log.i("lifecycle", "Friends  OnCreateView ");
 
 
 
@@ -60,33 +55,28 @@ public class HomeFragment_3 extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         setRecyclerView();
-        Log.i("lifecycle", "Friends  OnActivityCreated ");
+
     }
 
 
     private void checkFriendsListSize() {
-        Log.i("lifecycle", "checkSize Friends");
         if (textView != null && recyclerView != null) {
 
-            Log.i("lifecycle", "checkSize Friends recyclerView !=null");
             if (friends.size() > 0) {
-                Log.i("lifecycle", "checkSize Friends > 0 ");
                 textView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             } else {
 
-                Log.i("lifecycle", "checkSize Friends < 0 ");
                 textView.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
             }
-        } else {
-            Log.i("lifecycle", "checkSize Friends recyclerView == null");
         }
     }
 
     private void setRecyclerView() {
 
-        adapter = new RecyclerViewAdapterFriends(friends, (HomeActivity) getActivity());
+        adapter = new RecyclerViewAdapterFriends(friends, (HomeActivity) getActivity(), HomeFragment_3.this);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
 
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -109,16 +99,21 @@ public class HomeFragment_3 extends Fragment {
             adapterUpdate();
         }
 
-        Log.i("lifecycle", "Friends  OnResume ");
         checkFriendsListSize();
     }
 
-    void getFriends() {
+    private void getFriends() {
         if (isLogin) {
             FriendsDb friendsDb = new FriendsDb(context);
             this.friends.clear();
             this.friends.addAll(friendsDb.getAllFriends());
         }
+    }
+
+    public void refreshFromAdapter() {
+        getFriends();
+        adapterUpdate();
+        checkFriendsListSize();
     }
 
     @Override

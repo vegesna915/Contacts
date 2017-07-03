@@ -1,9 +1,12 @@
 package com.example.varma.contacts.Adapters;
 
 import android.annotation.SuppressLint;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.varma.contacts.ContactInfoActivity;
+import com.example.varma.contacts.Extra.Caller;
 import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment2;
@@ -171,24 +175,32 @@ public class RecyclerViewAdapterContact extends RecyclerView.Adapter<RecyclerVie
 
 
         Contact contact = contacts.get(longClickPosition);
-        Toast.makeText(homeActivity, "Long Clicked on " + contact.getContactName(), Toast.LENGTH_SHORT).show();
         switch (menuItemId) {
 
             case 0: {
-
+                //Call
+                Caller.callNumber(homeActivity, contact.getContactNumber().trim());
                 break;
             }
             case 1: {
-
+                //Message
+                Caller.smsNumber(homeActivity, contact.getContactNumber().trim());
                 break;
             }
 
             case 2: {
-
+                //Copy Number
+                Utils.copyToClipBoard(context, contact.getContactNumber());
+                Toast.makeText(context, "Number copied", Toast.LENGTH_SHORT).show();
                 break;
             }
             case 3: {
-
+                //Edit Contact
+                Intent toEditContact = new Intent(Intent.ACTION_EDIT);
+                Uri contentUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI,
+                        Long.parseLong(contact.getContactId()));
+                toEditContact.setData(contentUri);
+                homeActivity.startActivity(toEditContact);
                 break;
             }
             default: {

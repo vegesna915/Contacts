@@ -1,5 +1,6 @@
 package com.example.varma.contacts.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.varma.contacts.ContactInfoActivity;
+import com.example.varma.contacts.Extra.Caller;
 import com.example.varma.contacts.Objects.DialerInfo;
 import com.example.varma.contacts.R;
 
@@ -68,12 +70,7 @@ public class RecyclerViewAdapterDialPad extends RecyclerView.Adapter<RecyclerVie
                 number = number.replace("#", Uri.encode("#"));
                 number = "tel:" + number;
 
-                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                try {
-                    context.startActivity(callIntent);
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
+                Caller.callNumber((Activity) context, number);
             }
         });
 

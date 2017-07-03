@@ -1,8 +1,14 @@
 package com.example.varma.contacts.Adapters;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.os.PersistableBundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +17,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.varma.contacts.Database.FriendsDb;
+import com.example.varma.contacts.Extra.Caller;
 import com.example.varma.contacts.Extra.Utils;
+import com.example.varma.contacts.Fragments.HomeFragment_3;
 import com.example.varma.contacts.FriendProfileActivity;
 import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment3;
 import com.example.varma.contacts.Objects.Friend;
 import com.example.varma.contacts.R;
+import com.example.varma.contacts.service.UnFriendJobService;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
@@ -28,10 +38,12 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
     private Context context;
     private int color, longClickPosition;
     private HomeActivity homeActivity;
+    private HomeFragment_3 homeFragment_3;
 
-    public RecyclerViewAdapterFriends(ArrayList<Friend> friends, final HomeActivity homeActivity) {
+    public RecyclerViewAdapterFriends(ArrayList<Friend> friends, HomeActivity homeActivity, HomeFragment_3 homeFragment_3) {
         this.friends.addAll(friends);
         this.homeActivity = homeActivity;
+        this.homeFragment_3 = homeFragment_3;
         this.homeActivity.setAdapterInterface_homeFragment3(new AdapterInterface_HomeFragment3() {
             @Override
             public void passMenuItem(int menuItemId) {
@@ -42,6 +54,7 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
 
         context = parent.getContext();
         View contactView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_holder, parent, false);
@@ -137,23 +150,31 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
 
         Friend friend = friends.get(longClickPosition);
-        Toast.makeText(homeActivity, "Long Clicked on " + friend.get_NUMBER(), Toast.LENGTH_SHORT).show();
         switch (menuItemId) {
 
-            case 0: {
+            case 0: {//Call
+
+                Caller.callNumber(homeActivity, friend.get_NUMBER().trim());
 
                 break;
             }
-            case 1: {
+            case 1: {//Message
+
+                Caller.smsNumber(homeActivity, friend.get_NUMBER().trim());
 
                 break;
             }
 
-            case 2: {
+            case 2: {//Copy Number
+
+                Utils.copyToClipBoard(context, friend.get_NUMBER());
+                Toast.makeText(context, "Number copied", Toast.LENGTH_SHORT).show();
 
                 break;
             }
-            case 3: {
+            case 3: {//Unfriend
+
+                unfriend(friend);
 
                 break;
             }
@@ -163,6 +184,45 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
             }
         }
     }
+
+    private void unfriend(final Friend friend) {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(homeActivity);
+        builder.setCancelable(true)
+                .setTitle("Unfriend")
+                .setMessage("Do you want to unfriend " + friend.get_NAME() + "?")
+                .setPositiveButton("unfriend", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PersistableBundle bundle = new PersistableBundle();
+                        bundle.putString(UnFriendJobService.INPUT_FRIEND_ID, friend.get_ID());
+
+                        JobScheduler jobScheduler = (JobScheduler) homeActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+                        int jobId = Integer.parseInt(friend.get_ID());
+                        JobInfo jobInfo = new JobInfo.Builder(
+                                jobId, new ComponentName(homeActivity, UnFriendJobService.class))
+                                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                                .setExtras(bundle)
+                                .build();
+
+                        jobScheduler.schedule(jobInfo);
+                        FriendsDb friendDb = new FriendsDb(homeActivity);
+                        friendDb.unFriend(friend.get_ID());
+
+                        homeFragment_3.refreshFromAdapter();
+                    }
+                })
+                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .create().show();
+    }
+
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -183,4 +243,6 @@ public class RecyclerViewAdapterFriends extends RecyclerView.Adapter<RecyclerVie
 
         }
     }
+
+
 }

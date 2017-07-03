@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.varma.contacts.ContactInfoActivity;
-import com.example.varma.contacts.Extra.PermissionsClass;
+import com.example.varma.contacts.DialerPadActivity;
+import com.example.varma.contacts.Extra.Caller;
+import com.example.varma.contacts.Extra.Utils;
 import com.example.varma.contacts.HomeActivity;
 import com.example.varma.contacts.Interface.AdapterInterface_HomeFragment1;
 import com.example.varma.contacts.Objects.CallLogInfo;
@@ -56,27 +57,28 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(final MyViewHolderCallLog holder, @SuppressLint("RecyclerView") final int position) {
 
-        String callerName = callLogs.get(position).getCallerName();
+        final CallLogInfo callLog = callLogs.get(position);
+        String callerName = callLog.getCallerName();
 
         if (callerName == null || callerName.equals("")) {
 
-            holder.callerNameView.setText(callLogs.get(position).getCallernumber());
+            holder.callerNameView.setText(callLog.getCallernumber());
             holder.callerNumberView.setText("");
 
         } else {
 
 
             holder.callerNameView.setText(callerName);
-            holder.callerNumberView.setText(callLogs.get(position).getCallernumber());
+            holder.callerNumberView.setText(callLog.getCallernumber());
 
         }
         //----------------------------------------
-        holder.copyCalls.setText(callLogs.get(position).getCopyCalls());
-        setIconCallLog(callLogs.get(position), holder.callerIcon);
+        holder.copyCalls.setText(callLog.getCopyCalls());
+        setIconCallLog(callLog, holder.callerIcon);
 
 
-        String callDate = callLogs.get(position).getCalldate();
-        holder.callTime.setText(callLogs.get(position).getCallTime());
+        String callDate = callLog.getCalldate();
+        holder.callTime.setText(callLog.getCallTime());
         if (position == 0) {
             holder.callDate.setText(callDate);
             holder.callDate.setVisibility(View.VISIBLE);
@@ -95,23 +97,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         holder.callDetailsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (PermissionsClass.hasPermissionCallPhone(context)) {
-
-                    String number = callLogs.get(position).getCallernumber().trim();
-                    number = "tel:" + number;
-
-                    Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(number));
-                    try {
-                        context.startActivity(callIntent);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } else {
-                    PermissionsClass.requestPermission(homeActivity,
-                            new String[]{PermissionsClass.CallPhone}, 701);
-                }
+                Caller.callNumber(homeActivity, callLog.getCallernumber().trim());
             }
 
         });
@@ -122,11 +108,11 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
                 Intent toContactInfoActivity = new Intent(context, ContactInfoActivity.class);
 
                 toContactInfoActivity.putExtra("contactId", "");
-                toContactInfoActivity.putExtra("contactNumber", callLogs.get(position).getCallernumber());
-                if (callLogs.get(position).getCallerName() == null) {
-                    toContactInfoActivity.putExtra("contactName", callLogs.get(position).getCallernumber());
+                toContactInfoActivity.putExtra("contactNumber", callLog.getCallernumber());
+                if (callLog.getCallerName() == null) {
+                    toContactInfoActivity.putExtra("contactName", callLog.getCallernumber());
                 } else {
-                    toContactInfoActivity.putExtra("contactName", callLogs.get(position).getCallerName());
+                    toContactInfoActivity.putExtra("contactName", callLog.getCallerName());
                 }
 
 
@@ -146,6 +132,7 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         });
 
     }
+
 
     @Override
     public int getItemCount() {
@@ -184,31 +171,6 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    /*public void filterCallLog(String query) {
-        callLogs.clear();
-
-        if (query.isEmpty()) {
-            callLogs.addAll(copyCallLogs);
-        } else {
-
-            String name, number;
-            query = query.trim().toLowerCase();
-
-            for (CallLogInfo callLog : copyCallLogs) {
-
-                name = callLog.getCallerName().toLowerCase();
-                number = callLog.getCallernumber().toLowerCase();
-
-                if (name.contains(query) || number.contains(query)) {
-                    callLogs.add(callLog);
-                }
-
-
-            }
-        }
-        notifyDataSetChanged();
-    }*/
-
     public void updateCallLog(ArrayList<CallLogInfo> callLogs) {
         this.callLogs.clear();
         this.callLogs.addAll(callLogs);
@@ -219,23 +181,31 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
 
 
         CallLogInfo info = callLogs.get(longClickPosition);
-        Toast.makeText(homeActivity, "Long Clicked on " + info.getCallernumber(), Toast.LENGTH_SHORT).show();
         switch (menuItemId) {
 
             case 0: {
-
+                //Call
+                Caller.callNumber(homeActivity, info.getCallernumber().trim());
                 break;
             }
             case 1: {
-
+                //Message
+                Caller.smsNumber(homeActivity, info.getCallernumber().trim());
                 break;
             }
 
             case 2: {
-
+                //Copy Number
+                Utils.copyToClipBoard(context, info.getCallernumber());
+                Toast.makeText(context, "Number copied", Toast.LENGTH_SHORT).show();
                 break;
             }
             case 3: {
+                //Edit Before Call
+
+                Intent toDialerPadActivity = new Intent(homeActivity, DialerPadActivity.class);
+                toDialerPadActivity.putExtra(DialerPadActivity.numberIntentExtra, info.getCallernumber().trim());
+                homeActivity.startActivity(toDialerPadActivity);
 
                 break;
             }
@@ -270,3 +240,27 @@ public class RecyclerViewAdapterCallLog extends RecyclerView.Adapter<RecyclerVie
         }
     }
 }
+/*public void filterCallLog(String query) {
+        callLogs.clear();
+
+        if (query.isEmpty()) {
+            callLogs.addAll(copyCallLogs);
+        } else {
+
+            String name, number;
+            query = query.trim().toLowerCase();
+
+            for (CallLogInfo callLog : copyCallLogs) {
+
+                name = callLog.getCallerName().toLowerCase();
+                number = callLog.getCallernumber().toLowerCase();
+
+                if (name.contains(query) || number.contains(query)) {
+                    callLogs.add(callLog);
+                }
+
+
+            }
+        }
+        notifyDataSetChanged();
+    }*/

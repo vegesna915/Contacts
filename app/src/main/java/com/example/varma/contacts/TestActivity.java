@@ -5,9 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.varma.contacts.Database.FriendsDb;
+import com.example.varma.contacts.Extra.Utils;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -19,14 +18,14 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
 
 
-        Button button = (Button) findViewById(R.id.button_test);
+        final Button button = (Button) findViewById(R.id.button_test);
+        button.setText(String.valueOf(Utils.num));
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                TextView textView = (TextView) findViewById(R.id.text_test);
-                FriendsDb friendsDb = new FriendsDb(TestActivity.this);
-                textView.setText("Friend Count" + friendsDb.getFriendsCount());
+                Utils.num++;
+                button.setText(String.valueOf(Utils.num));
             }
         });
 
